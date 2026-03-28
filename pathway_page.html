@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biology Pathways — Yash Sahu</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ===== BASE ===== */
+:root{
+  --bg:#0c0c0f;--surface:#13131a;--card:#1a1a24;--border:#2a2a3a;
+  --purple:#8b5cf6;--purple-l:#c4b5fd;--purple-d:#4c1d95;
+  --teal:#14b8a6;--teal-l:#99f6e4;--amber:#f59e0b;--amber-l:#fde68a;
+  --pink:#ec4899;--pink-l:#fbcfe8;--green:#22c55e;--green-l:#bbf7d0;
+  --text:#f0f0f8;--muted:#8080a0;--faint:#3a3a50;
+  --sans:'Syne',sans-serif;--serif:'Instrument Serif',serif;--mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);overflow-x:hidden;cursor:none;}
+
+/* ===== CURSOR ===== */
+#cur{position:fixed;width:12px;height:12px;background:var(--purple);border-radius:50%;pointer-events:none;z-index:9999;mix-blend-mode:screen;transition:transform 0.1s;}
+#cur-ring{position:fixed;width:40px;height:40px;border:1px solid var(--purple);border-radius:50%;pointer-events:none;z-index:9998;transition:all 0.06s;}
+
+/* ===== FLOATING PARTICLES ===== */
+.particle{position:fixed;border-radius:50%;pointer-events:none;z-index:0;animation:drift linear infinite;}
+@keyframes drift{0%{transform:translateY(100vh) rotate(0deg);opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{transform:translateY(-100px) rotate(720deg);opacity:0;}}
+
+/* ===== NAV ===== */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 56px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.05);}
+.nav-logo{font-weight:800;font-size:14px;letter-spacing:0.08em;background:linear-gradient(135deg,var(--purple-l),var(--teal-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-links{display:flex;gap:28px;}
+.nav-links a{font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:0.06em;text-transform:uppercase;transition:color 0.2s;}
+.nav-links a:hover{color:var(--purple-l);}
+.nav-back{font-size:12px;color:var(--muted);text-decoration:none;padding:8px 18px;border:1px solid var(--border);border-radius:100px;transition:all 0.2s;}
+.nav-back:hover{border-color:var(--purple);color:var(--purple-l);}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 40px 80px;position:relative;z-index:2;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);border-radius:100px;padding:8px 20px;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--purple-l);margin-bottom:32px;animation:fadeUp 0.8s ease both;}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--purple);animation:pulse 2s ease infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.3;transform:scale(0.6);}}
+.hero h1{font-family:var(--serif);font-size:clamp(52px,8vw,110px);line-height:0.95;margin-bottom:24px;animation:fadeUp 0.9s 0.1s ease both;}
+.hero h1 em{font-style:italic;background:linear-gradient(135deg,var(--purple-l),var(--teal-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-size:16px;color:var(--muted);max-width:560px;line-height:1.8;margin-bottom:48px;animation:fadeUp 1s 0.2s ease both;}
+.hero-scroll{animation:fadeUp 1s 0.4s ease both;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--muted);font-size:12px;letter-spacing:0.1em;text-transform:uppercase;}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--purple),transparent);animation:scrollDown 2s ease-in-out infinite;}
+@keyframes scrollDown{0%{transform:scaleY(0);transform-origin:top;}50%{transform:scaleY(1);transform-origin:top;}51%{transform:scaleY(1);transform-origin:bottom;}100%{transform:scaleY(0);transform-origin:bottom;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(32px);}to{opacity:1;transform:translateY(0);}}
+
+/* ===== SECTION BASE ===== */
+.sec{max-width:1200px;margin:0 auto;padding:80px 56px;position:relative;z-index:2;}
+.sec-tag{font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--purple);margin-bottom:12px;}
+h2{font-family:var(--serif);font-size:clamp(36px,5vw,60px);line-height:1.05;margin-bottom:16px;}
+h2 em{font-style:italic;color:var(--teal-l);}
+.sec-sub{font-size:15px;color:var(--muted);line-height:1.8;max-width:640px;margin-bottom:56px;}
+
+/* ===== DIAGRAM CARDS ===== */
+.diagram-card{background:var(--card);border:1px solid var(--border);border-radius:24px;overflow:hidden;margin-bottom:48px;transition:border-color 0.3s;}
+.diagram-card:hover{border-color:rgba(139,92,246,0.4);}
+.dc-header{padding:32px 36px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;}
+.dc-num{font-family:var(--mono);font-size:11px;color:var(--purple);letter-spacing:0.1em;margin-bottom:10px;}
+.dc-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.dc-desc{font-size:13px;color:var(--muted);line-height:1.7;max-width:600px;}
+.dc-badge{background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.25);color:var(--purple-l);font-size:11px;font-weight:600;padding:6px 14px;border-radius:100px;white-space:nowrap;flex-shrink:0;}
+.dc-body{padding:24px 36px 32px;}
+
+/* ===== MEMORY TRICK BOX ===== */
+.memory-trick{background:linear-gradient(135deg,rgba(20,184,166,0.1),rgba(139,92,246,0.1));border:1px solid rgba(20,184,166,0.25);border-radius:14px;padding:20px 24px;margin-top:20px;}
+.mt-label{font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.mt-label::before{content:'⚡';font-size:13px;}
+.mt-text{font-size:13px;color:var(--teal-l);line-height:1.7;}
+.mt-mnemonic{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--amber-l);margin-top:8px;letter-spacing:0.04em;}
+
+/* ===== STEPPER ===== */
+.stepper-nav{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.step-dots{display:flex;gap:6px;}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--faint);cursor:pointer;transition:all 0.2s;}
+.sdot.active{background:var(--purple);transform:scale(1.3);}
+.step-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 16px;border-radius:100px;font-family:var(--sans);font-size:12px;cursor:pointer;transition:all 0.2s;}
+.step-btn:hover{border-color:var(--purple);color:var(--purple-l);}
+.step-lbl{font-size:12px;color:var(--muted);margin-left:auto;font-style:italic;}
+.panel-content{display:none;animation:panelIn 0.4s ease;}
+.panel-content.active{display:block;}
+@keyframes panelIn{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:translateX(0);}}
+
+/* ===== KREBS INFO ===== */
+.krebs-info{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-top:14px;min-height:88px;}
+.ki-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px;}
+.ki-body{font-size:13px;color:var(--muted);line-height:1.65;}
+.ki-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.kchip{font-size:11px;font-weight:600;padding:3px 12px;border-radius:100px;}
+.kc-co2{background:rgba(239,68,68,0.15);color:#fca5a5;}
+.kc-nadh{background:rgba(245,158,11,0.15);color:var(--amber-l);}
+.kc-fadh{background:rgba(236,72,153,0.15);color:var(--pink-l);}
+.kc-gtp{background:rgba(34,197,94,0.15);color:var(--green-l);}
+.krebs-totals{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+.kt{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;text-align:center;}
+.kt-n{font-family:var(--serif);font-size:24px;color:var(--text);}
+.kt-l{font-size:10px;color:var(--muted);letter-spacing:0.06em;}
+
+/* ===== LAC OPERON TOGGLE ===== */
+.lac-controls{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.lac-btn{padding:10px 24px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.25s;}
+.lac-btn.active-glucose{background:rgba(245,158,11,0.15);border-color:var(--amber);color:var(--amber-l);}
+.lac-btn.active-lactose{background:rgba(34,197,94,0.15);border-color:var(--green);color:var(--green-l);}
+.lac-btn.active-both{background:rgba(20,184,166,0.15);border-color:var(--teal);color:var(--teal-l);}
+.lac-btn.active-neither{background:rgba(239,68,68,0.15);border-color:#ef4444;color:#fca5a5;}
+.lac-state{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;padding:6px 14px;border-radius:100px;margin-top:10px;}
+.state-on{background:rgba(34,197,94,0.15);color:var(--green-l);border:1px solid rgba(34,197,94,0.3);}
+.state-off{background:rgba(239,68,68,0.15);color:#fca5a5;border:1px solid rgba(239,68,68,0.3);}
+
+/* ===== SME ANNOTATION ===== */
+.sme-box{background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:14px;padding:18px 22px;margin-top:18px;}
+.sme-label{font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--purple-l);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.sme-label::before{content:'🧪';}
+.sme-text{font-size:13px;color:rgba(196,181,253,0.85);line-height:1.7;}
+
+/* ===== CERTIFICATIONS ===== */
+.cert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
+.cert-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px;transition:all 0.25s;position:relative;overflow:hidden;}
+.cert-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0;}
+.cert-card.ai::before{background:linear-gradient(90deg,var(--purple),var(--teal));}
+.cert-card.health::before{background:linear-gradient(90deg,#f87171,var(--pink));}
+.cert-card.bio::before{background:linear-gradient(90deg,var(--green),var(--teal));}
+.cert-card.edu::before{background:linear-gradient(90deg,var(--amber),#f97316);}
+.cert-card:hover{border-color:rgba(139,92,246,0.35);transform:translateY(-3px);}
+.cert-cat{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;display:inline-block;padding:3px 10px;border-radius:100px;}
+.cat-ai{background:rgba(139,92,246,0.15);color:var(--purple-l);}
+.cat-health{background:rgba(248,113,113,0.15);color:#fca5a5;}
+.cat-bio{background:rgba(34,197,94,0.15);color:var(--green-l);}
+.cat-edu{background:rgba(245,158,11,0.15);color:var(--amber-l);}
+.cert-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.4;}
+.cert-org{font-size:12px;color:var(--muted);}
+.cert-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
+.cert-status{font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;}
+.status-done{background:rgba(34,197,94,0.15);color:var(--green-l);}
+.status-enrolled{background:rgba(245,158,11,0.15);color:var(--amber-l);}
+.status-planned{background:rgba(99,102,241,0.15);color:#a5b4fc;}
+.cert-yr{font-size:11px;font-family:var(--mono);color:var(--muted);}
+
+/* Edit mode */
+.edit-bar{display:flex;align-items:center;gap:12px;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.25);border-radius:12px;padding:12px 20px;margin-bottom:28px;}
+.edit-bar p{font-size:13px;color:var(--purple-l);}
+.edit-toggle{background:var(--purple);color:white;border:none;padding:8px 20px;border-radius:100px;font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;margin-left:auto;}
+.edit-toggle:hover{background:#7c3aed;}
+.cert-card[contenteditable=true]{outline:2px dashed rgba(139,92,246,0.5);cursor:text;}
+
+/* ===== CONTACT STRIP ===== */
+.contact-strip{background:var(--surface);border-top:1px solid var(--border);padding:56px;text-align:center;position:relative;z-index:2;}
+.contact-strip h2{font-family:var(--serif);font-size:clamp(32px,5vw,56px);margin-bottom:32px;}
+.chip-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.cchip{display:inline-flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);padding:14px 24px;border-radius:12px;text-decoration:none;color:var(--muted);font-size:13px;transition:all 0.2s;}
+.cchip:hover{border-color:var(--purple);color:var(--purple-l);transform:translateY(-3px);}
+.cchip-icon{width:32px;height:32px;background:rgba(139,92,246,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;}
+
+footer{background:var(--bg);border-top:1px solid var(--border);text-align:center;padding:24px;font-size:12px;color:var(--muted);font-family:var(--mono);letter-spacing:0.04em;position:relative;z-index:2;}
+
+/* ===== REVEAL ===== */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.vis{opacity:1;transform:translateY(0);}
+
+@media(max-width:768px){
+  nav{padding:14px 20px;}.nav-links{display:none;}
+  .hero h1{font-size:48px;}.sec{padding:56px 20px;}
+  .dc-header{flex-direction:column;}.dc-body{padding:20px;}.cert-grid{grid-template-columns:1fr;}
+  .contact-strip{padding:40px 20px;}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- Particles -->
+<div id="particles"></div>
+
+<nav>
+  <div class="nav-logo">Yash Sahu</div>
+  <div class="nav-links">
+    <a href="#diagrams">Pathways</a>
+    <a href="#certs">Credentials</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <a href="index.html" class="nav-back">← Portfolio</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">Proof of Work — Biology SME</div>
+  <h1>Pathways,<br>Patterns &<br><em>Proof</em></h1>
+  <p class="hero-sub">Interactive annotated diagrams demonstrating pathway interpretation — a core Biology SME skill. Plus memory tricks that actually work.</p>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll to explore</span>
+  </div>
+</section>
+
+<!-- ========== DIAGRAMS ========== -->
+<div id="diagrams" class="sec">
+  <div class="sec-tag reveal">Diagram & Pathway Interpretation</div>
+  <h2 class="reveal">Three <em>pathways,</em><br>fully annotated</h2>
+  <p class="sec-sub reveal">Click through each step. Every diagram includes SME-level annotations identifying common misconceptions — the same skill used in AI biology evaluation.</p>
+
+  <!-- ===== DIAGRAM 1: DNA REPLICATION FORK ===== -->
+  <div class="diagram-card reveal">
+    <div class="dc-header">
+      <div>
+        <div class="dc-num">DIAGRAM 01 · Molecular Biology</div>
+        <div class="dc-title">DNA Replication Fork</div>
+        <div class="dc-desc">The replication fork — helicase, primase, leading vs lagging strand synthesis, Okazaki fragments. Step through all 5 stages with annotations and a memory trick.</div>
+      </div>
+      <div class="dc-badge">5 steps · Click-through</div>
+    </div>
+    <div class="dc-body">
+      <div class="stepper-nav">
+        <div class="step-dots" id="dna-dots"></div>
+        <button class="step-btn" onclick="dnaNav(-1)">←</button>
+        <button class="step-btn" onclick="dnaNav(1)">→</button>
+        <span class="step-lbl" id="dna-lbl">Step 1 of 5</span>
+      </div>
+
+      <div id="dna-panels">
+        <!-- Step 1 -->
+        <div class="panel-content active" data-label="The Fork — Overview">
+          <svg width="100%" viewBox="0 0 680 300">
+          <defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <line x1="40" y1="80" x2="260" y2="150" stroke="#8b5cf6" stroke-width="8" stroke-linecap="round"/>
+          <line x1="40" y1="108" x2="260" y2="150" stroke="#14b8a6" stroke-width="8" stroke-linecap="round"/>
+          <line x1="80" y1="87" x2="80" y2="99" stroke="#3a3a50" stroke-width="2.5"/>
+          <line x1="130" y1="101" x2="130" y2="111" stroke="#3a3a50" stroke-width="2.5"/>
+          <line x1="180" y1="114" x2="180" y2="122" stroke="#3a3a50" stroke-width="2.5"/>
+          <line x1="230" y1="127" x2="230" y2="133" stroke="#3a3a50" stroke-width="2.5"/>
+          <circle cx="260" cy="150" r="10" fill="#ef4444"/>
+          <text font-size="11" x="260" y="175" text-anchor="middle" fill="#fca5a5" font-family="Syne,sans-serif" font-weight="600">Origin</text>
+          <ellipse cx="295" cy="150" rx="22" ry="22" fill="rgba(245,158,11,0.2)" stroke="#f59e0b" stroke-width="1.5"/>
+          <text font-size="11" x="295" y="147" text-anchor="middle" fill="#fde68a" font-family="Syne,sans-serif" font-weight="600">Hel</text>
+          <text font-size="9" x="295" y="160" text-anchor="middle" fill="#f59e0b" font-family="Syne,sans-serif">icase</text>
+          <line x1="260" y1="150" x2="580" y2="70" stroke="#8b5cf6" stroke-width="6" stroke-linecap="round"/>
+          <line x1="260" y1="150" x2="580" y2="230" stroke="#14b8a6" stroke-width="6" stroke-linecap="round"/>
+          <line x1="555" y1="78" x2="590" y2="68" stroke="#8b5cf6" stroke-width="2.5" marker-end="url(#arr)"/>
+          <line x1="555" y1="222" x2="590" y2="232" stroke="#14b8a6" stroke-width="2.5" marker-end="url(#arr)"/>
+          <text font-size="12" x="430" y="56" text-anchor="middle" fill="#c4b5fd" font-family="Syne,sans-serif" font-weight="600">Leading strand → continuous</text>
+          <text font-size="12" x="430" y="252" text-anchor="middle" fill="#99f6e4" font-family="Syne,sans-serif" font-weight="600">Lagging strand → discontinuous</text>
+          <text font-size="11" x="120" y="65" text-anchor="middle" fill="#8080a0" font-family="Syne,sans-serif">5'→3' template</text>
+          <text font-size="11" x="120" y="135" text-anchor="middle" fill="#8080a0" font-family="Syne,sans-serif">3'→5' template</text>
+          </svg>
+          <div class="sme-box"><div class="sme-label">SME Annotation</div><div class="sme-text">The Y-shape is the fork. Both new strands grow 5'→3' — but the templates run antiparallel. This forces the lagging strand to synthesise in the <em>opposite</em> direction to fork movement. This antiparallel constraint is the most commonly misunderstood concept in DNA replication.</div></div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="panel-content" data-label="Helicase + SSB Proteins">
+          <svg width="100%" viewBox="0 0 680 260">
+          <defs><marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <path d="M60 130 Q180 70 340 50" fill="none" stroke="#8b5cf6" stroke-width="7" stroke-linecap="round"/>
+          <path d="M60 130 Q180 190 340 210" fill="none" stroke="#14b8a6" stroke-width="7" stroke-linecap="round"/>
+          <ellipse cx="370" cy="130" rx="32" ry="32" fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="2"/>
+          <text font-size="13" x="370" y="127" text-anchor="middle" fill="#fde68a" font-family="Syne,sans-serif" font-weight="700">Helicase</text>
+          <text font-size="10" x="370" y="142" text-anchor="middle" fill="#f59e0b" font-family="Syne,sans-serif">breaks H-bonds</text>
+          <line x1="410" y1="130" x2="480" y2="130" stroke="#ef4444" stroke-width="2" marker-end="url(#arr2)" stroke-dasharray="5 3"/>
+          <text font-size="12" x="500" y="135" fill="#fca5a5" font-family="Syne,sans-serif" font-weight="600">Fork →</text>
+          <rect x="140" y="36" width="44" height="20" rx="5" fill="rgba(139,92,246,0.2)" stroke="#8b5cf6" stroke-width="1"/>
+          <text font-size="11" x="162" y="50" text-anchor="middle" fill="#c4b5fd" font-family="Syne,sans-serif">SSB</text>
+          <rect x="210" y="42" width="44" height="20" rx="5" fill="rgba(139,92,246,0.2)" stroke="#8b5cf6" stroke-width="1"/>
+          <text font-size="11" x="232" y="56" text-anchor="middle" fill="#c4b5fd" font-family="Syne,sans-serif">SSB</text>
+          <rect x="140" y="200" width="44" height="20" rx="5" fill="rgba(139,92,246,0.2)" stroke="#8b5cf6" stroke-width="1"/>
+          <text font-size="11" x="162" y="214" text-anchor="middle" fill="#c4b5fd" font-family="Syne,sans-serif">SSB</text>
+          <rect x="210" y="194" width="44" height="20" rx="5" fill="rgba(139,92,246,0.2)" stroke="#8b5cf6" stroke-width="1"/>
+          <text font-size="11" x="232" y="208" text-anchor="middle" fill="#c4b5fd" font-family="Syne,sans-serif">SSB</text>
+          <text font-size="11" x="530" y="55" fill="#8080a0" font-family="Syne,sans-serif">SSB = Single Strand</text>
+          <text font-size="11" x="530" y="70" fill="#8080a0" font-family="Syne,sans-serif">Binding proteins</text>
+          <text font-size="11" x="530" y="86" fill="#8080a0" font-family="Syne,sans-serif">Prevent re-annealing</text>
+          </svg>
+          <div class="memory-trick"><div class="mt-label">Memory Trick</div><div class="mt-text">Think of Helicase as a <strong style="color:#fde68a">zipper-opener</strong> running along a jacket zipper. SSB proteins are like <strong style="color:#c4b5fd">paperclips</strong> holding each side open so it doesn't zip back up.</div><div class="mt-mnemonic">H = Helicase = "H"elps open the Helix</div></div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="panel-content" data-label="Primase — RNA Primers">
+          <svg width="100%" viewBox="0 0 680 260">
+          <path d="M40 110 Q200 90 420 80" fill="none" stroke="#8b5cf6" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
+          <path d="M40 190 Q200 210 420 230" fill="none" stroke="#14b8a6" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
+          <rect x="170" y="64" width="90" height="26" rx="7" fill="rgba(239,68,68,0.2)" stroke="#ef4444" stroke-width="1.5"/>
+          <text font-size="12" x="215" y="81" text-anchor="middle" fill="#fca5a5" font-family="Syne,sans-serif" font-weight="700">RNA Primer</text>
+          <rect x="130" y="218" width="80" height="24" rx="7" fill="rgba(239,68,68,0.2)" stroke="#ef4444" stroke-width="1.5"/>
+          <text font-size="11" x="170" y="234" text-anchor="middle" fill="#fca5a5" font-family="Syne,sans-serif" font-weight="700">Primer 1</text>
+          <rect x="260" y="226" width="80" height="24" rx="7" fill="rgba(239,68,68,0.2)" stroke="#ef4444" stroke-width="1.5"/>
+          <text font-size="11" x="300" y="242" text-anchor="middle" fill="#fca5a5" font-family="Syne,sans-serif" font-weight="700">Primer 2</text>
+          <ellipse cx="450" cy="80" rx="28" ry="22" fill="rgba(236,72,153,0.15)" stroke="#ec4899" stroke-width="1.5"/>
+          <text font-size="12" x="450" y="77" text-anchor="middle" fill="#fbcfe8" font-family="Syne,sans-serif" font-weight="700">Primase</text>
+          <text font-size="10" x="450" y="91" text-anchor="middle" fill="#ec4899" font-family="Syne,sans-serif">RNA pol</text>
+          <rect x="500" y="140" width="160" height="96" rx="10" fill="rgba(26,26,36,0.8)" stroke="#2a2a3a" stroke-width="0.5"/>
+          <text font-size="12" x="580" y="162" text-anchor="middle" fill="#f0f0f8" font-family="Syne,sans-serif" font-weight="600">Why primers?</text>
+          <text font-size="11" x="514" y="180" fill="#8080a0" font-family="Syne,sans-serif">DNA Pol III cannot</text>
+          <text font-size="11" x="514" y="196" fill="#8080a0" font-family="Syne,sans-serif">start de novo. Needs</text>
+          <text font-size="11" x="514" y="212" fill="#8080a0" font-family="Syne,sans-serif">free 3'-OH to add</text>
+          <text font-size="11" x="514" y="228" fill="#fca5a5" font-family="Syne,sans-serif">Removed by RNase H</text>
+          </svg>
+          <div class="memory-trick"><div class="mt-label">Memory Trick</div><div class="mt-text">Primers are like a <strong style="color:#fde68a">running start</strong> in a race. DNA Pol cannot start from nothing — it needs someone to "fire the starting gun" (primase) and give it the first few steps (primer) before it can sprint.</div><div class="mt-mnemonic">P = Primer = "P"aves the way for Pol III</div></div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="panel-content" data-label="Leading vs Lagging Synthesis">
+          <svg width="100%" viewBox="0 0 680 310">
+          <defs><marker id="arr4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <text font-size="13" x="40" y="48" fill="#8080a0" font-family="Syne,sans-serif" font-weight="600">LEADING STRAND</text>
+          <line x1="40" y1="68" x2="560" y2="60" stroke="#8b5cf6" stroke-width="5" stroke-linecap="round" opacity="0.4"/>
+          <line x1="120" y1="68" x2="490" y2="62" stroke="#22c55e" stroke-width="5" stroke-linecap="round"/>
+          <line x1="480" y1="63" x2="510" y2="62" stroke="#22c55e" stroke-width="2.5" marker-end="url(#arr4)"/>
+          <rect x="510" y="46" width="80" height="34" rx="8" fill="rgba(34,197,94,0.15)" stroke="#22c55e" stroke-width="1.5"/>
+          <text font-size="12" x="550" y="62" text-anchor="middle" fill="#bbf7d0" font-family="Syne,sans-serif" font-weight="700">Pol III</text>
+          <text font-size="10" x="550" y="74" text-anchor="middle" fill="#22c55e" font-family="Syne,sans-serif">continuous</text>
+          <text font-size="13" x="40" y="148" fill="#8080a0" font-family="Syne,sans-serif" font-weight="600">LAGGING STRAND (Okazaki fragments)</text>
+          <line x1="40" y1="168" x2="560" y2="178" stroke="#14b8a6" stroke-width="5" stroke-linecap="round" opacity="0.4"/>
+          <line x1="80" y1="168" x2="190" y2="170" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+          <line x1="220" y1="172" x2="330" y2="174" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+          <line x1="365" y1="175" x2="470" y2="177" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+          <text font-size="11" x="135" y="160" text-anchor="middle" fill="#fde68a" font-family="Syne,sans-serif">Frag 1</text>
+          <text font-size="11" x="275" y="162" text-anchor="middle" fill="#fde68a" font-family="Syne,sans-serif">Frag 2</text>
+          <text font-size="11" x="418" y="163" text-anchor="middle" fill="#fde68a" font-family="Syne,sans-serif">Frag 3</text>
+          <line x1="188" y1="171" x2="82" y2="169" stroke="#f59e0b" stroke-width="2" marker-end="url(#arr4)"/>
+          <line x1="328" y1="174" x2="222" y2="172" stroke="#f59e0b" stroke-width="2" marker-end="url(#arr4)"/>
+          <rect x="510" y="156" width="80" height="34" rx="8" fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="1.5"/>
+          <text font-size="12" x="550" y="171" text-anchor="middle" fill="#fde68a" font-family="Syne,sans-serif" font-weight="700">Pol III</text>
+          <text font-size="10" x="550" y="183" text-anchor="middle" fill="#f59e0b" font-family="Syne,sans-serif">discontinuous</text>
+          <text font-size="12" x="340" y="240" text-anchor="middle" fill="#8080a0" font-family="Syne,sans-serif">Okazaki fragments: ~100-200 nt (eukaryotes), ~1000-2000 nt (prokaryotes)</text>
+          <text font-size="12" x="340" y="260" text-anchor="middle" fill="#8080a0" font-family="Syne,sans-serif">Joined later by DNA Ligase after RNA primers replaced by Pol I</text>
+          </svg>
+          <div class="sme-box"><div class="sme-label">SME Annotation — Common AI Error to Watch For</div><div class="sme-text">Many AI models incorrectly state the lagging strand is synthesised 3'→5'. It is NOT. The lagging strand is synthesised 5'→3' in short segments that go in the opposite direction to the fork. This is a frequent factual error in AI-generated biology content.</div></div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="panel-content" data-label="Primer Removal → Ligation">
+          <svg width="100%" viewBox="0 0 680 280">
+          <text font-size="12" x="40" y="40" fill="#fca5a5" font-family="Syne,sans-serif" font-weight="700">① Gaps left after primer removal (RNase H + Pol I fills)</text>
+          <line x1="40" y1="60" x2="200" y2="60" stroke="#22c55e" stroke-width="6" stroke-linecap="round"/>
+          <rect x="200" y="51" width="40" height="18" rx="4" fill="rgba(239,68,68,0.15)" stroke="#ef4444" stroke-width="1" stroke-dasharray="4 2"/>
+          <line x1="240" y1="60" x2="380" y2="60" stroke="#22c55e" stroke-width="6" stroke-linecap="round"/>
+          <rect x="380" y="51" width="40" height="18" rx="4" fill="rgba(239,68,68,0.15)" stroke="#ef4444" stroke-width="1" stroke-dasharray="4 2"/>
+          <line x1="420" y1="60" x2="560" y2="60" stroke="#22c55e" stroke-width="6" stroke-linecap="round"/>
+          <text font-size="11" x="220" y="82" text-anchor="middle" fill="#fca5a5" font-family="Syne,sans-serif">gap</text>
+          <text font-size="11" x="400" y="82" text-anchor="middle" fill="#fca5a5" font-family="Syne,sans-serif">gap</text>
+          <text font-size="12" x="40" y="130" fill="#fde68a" font-family="Syne,sans-serif" font-weight="700">② Nicks remain after Pol I fills gaps</text>
+          <line x1="40" y1="150" x2="560" y2="150" stroke="#22c55e" stroke-width="6" stroke-linecap="round"/>
+          <circle cx="220" cy="150" r="6" fill="none" stroke="#ef4444" stroke-width="2.5"/>
+          <circle cx="400" cy="150" r="6" fill="none" stroke="#ef4444" stroke-width="2.5"/>
+          <text font-size="11" x="220" y="172" text-anchor="middle" fill="#fca5a5" font-family="Syne,sans-serif">nick</text>
+          <text font-size="11" x="400" y="172" text-anchor="middle" fill="#fca5a5" font-family="Syne,sans-serif">nick</text>
+          <text font-size="12" x="40" y="215" fill="#bbf7d0" font-family="Syne,sans-serif" font-weight="700">③ DNA Ligase seals nicks → Complete daughter strand</text>
+          <line x1="40" y1="240" x2="560" y2="240" stroke="#22c55e" stroke-width="9" stroke-linecap="round"/>
+          <text font-size="12" x="300" y="268" text-anchor="middle" fill="#22c55e" font-family="Syne,sans-serif" font-weight="600">✓ Continuous daughter strand</text>
+          </svg>
+          <div class="memory-trick"><div class="mt-label">Memory Trick — Full Sequence</div><div class="mt-text">Remember the full enzyme order as: <strong style="color:#fde68a">"Helicase Starts, Primase Primes, Pol III Produces, Pol I Patches, Ligase Links"</strong></div><div class="mt-mnemonic">H → P → III → I → L : "Happy People Produce In Life"</div></div>
+        </div>
+      </div>
+
+      <div class="sme-box" style="margin-top:16px;">
+        <div class="sme-label">Why this matters for Biology SME work</div>
+        <div class="sme-text">In AI evaluation (Project 1), Q1 tested RNA Polymerase — which students and AI models frequently confuse with DNA Pol. The ability to distinguish between enzymes, their directionality, and their specific roles is exactly the kind of nuanced knowledge required to annotate AI errors correctly.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DIAGRAM 2: KREBS CYCLE ===== -->
+  <div class="diagram-card reveal">
+    <div class="dc-header">
+      <div>
+        <div class="dc-num">DIAGRAM 02 · Biochemistry</div>
+        <div class="dc-title">Krebs Cycle (TCA Cycle)</div>
+        <div class="dc-desc">8 reactions in the mitochondrial matrix. Click each step to see the enzyme, products, and regulatory significance. Includes mnemonic for NADH/FADH₂ generation steps.</div>
+      </div>
+      <div class="dc-badge">8 steps · Interactive</div>
+    </div>
+    <div class="dc-body">
+      <svg id="krebs-svg" width="100%" viewBox="0 0 680 460" style="cursor:pointer">
+      <defs><marker id="karr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <rect x="10" y="10" width="660" height="440" rx="20" fill="none" stroke="#2a2a3a" stroke-width="0.5" stroke-dasharray="6 4"/>
+      <text font-size="11" x="340" y="30" text-anchor="middle" fill="#3a3a50" font-family="Syne,sans-serif">Mitochondrial matrix</text>
+      <!-- Acetyl CoA entry -->
+      <rect x="275" y="42" width="130" height="34" rx="8" fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="1"/>
+      <text font-size="12" x="340" y="57" text-anchor="middle" fill="#fde68a" font-family="Syne,sans-serif" font-weight="700">Acetyl-CoA (2C)</text>
+      <text font-size="10" x="340" y="70" text-anchor="middle" fill="#f59e0b" font-family="Syne,sans-serif">Entry point</text>
+      <line x1="340" y1="76" x2="340" y2="100" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#karr)"/>
+      <!-- Step 1 Citrate -->
+      <g id="ks1" style="cursor:pointer" onclick="krebsStep(1)">
+        <rect x="270" y="102" width="140" height="38" rx="8" fill="rgba(139,92,246,0.12)" stroke="#8b5cf6" stroke-width="1"/>
+        <text font-size="12" x="340" y="118" text-anchor="middle" fill="#c4b5fd" font-family="Syne,sans-serif" font-weight="700">1. Citrate (6C)</text>
+        <text font-size="10" x="340" y="132" text-anchor="middle" fill="#8b5cf6" font-family="Syne,sans-serif">Citrate synthase</text>
+      </g>
+      <path d="M410 121 Q510 121 530 190" fill="none" stroke="#3a3a50" stroke-width="1.5" marker-end="url(#karr)"/>
+      <!-- Step 2 Isocitrate -->
+      <g id="ks2" style="cursor:pointer" onclick="krebsStep(2)">
+        <rect x="495" y="168" width="145" height="38" rx="8" fill="rgba(139,92,246,0.12)" stroke="#8b5cf6" stroke-width="1"/>
+        <text font-size="12" x="567" y="184" text-anchor="middle" fill="#c4b5fd" font-family="Syne,sans-serif" font-weight="700">2. Isocitrate (6C)</text>
+        <text font-size="10" x="567" y="198" text-anchor="middle" fill="#8b5cf6" font-family="Syne,sans-serif">Aconitase</text>
+      </g>
+      <path d="M570 206 Q592 260 548 300" fill="none" stroke="#3a3a50" stroke-width="1.5" marker-end="url(#karr)"/>
+      <text font-size="11" x="610" y="260" fill="#fca5a5" font-family="Syne,sans-serif">CO₂+NADH</text>
+      <!-- Step 3 alpha-KG -->
+      <g id="ks3" style="cursor:pointer" onclick="krebsStep(3)">
+        <rect x="455" y="280" width="165" height="38" rx="8" fill="rgba(34,197,94,0.1)" stroke="#22c55e" stroke-width="1"/>
+        <text font-size="11" x="537" y="296" text-anchor="middle" fill="#bbf7d0" font-family="Syne,sans-serif" font-weight="700">3. α-Ketoglut. (5C)</text>
+        <text font-size="10" x="537" y="310" text-anchor="middle" fill="#22c55e" font-family="Syne,sans-serif">Isocitrate dehydrogenase</text>
+      </g>
+      <path d="M490 318 Q440 375 375 396" fill="none" stroke="#3a3a50" stroke-width="1.5" marker-end="url(#karr)"/>
+      <text font-size="11" x="472" y="372" fill="#fca5a5" font-family="Syne,sans-serif">CO₂+NADH</text>
+      <!-- Step 4 Succinyl CoA -->
+      <g id="ks4" style="cursor:pointer" onclick="krebsStep(4)">
+        <rect x="230" y="390" width="160" height="38" rx="8" fill="rgba(34,197,94,0.1)" stroke="#22c55e" stroke-width="1"/>
+        <text font-size="11" x="310" y="406" text-anchor="middle" fill="#bbf7d0" font-family="Syne,sans-serif" font-weight="700">4. Succinyl-CoA (4C)</text>
+        <text font-size="10" x="310" y="420" text-anchor="middle" fill="#22c55e" font-family="Syne,sans-serif">α-KG dehydrogenase</text>
+      </g>
+      <path d="M230 409 Q155 398 148 338" fill="none" stroke="#3a3a50" stroke-width="1.5" marker-end="url(#karr)"/>
+      <text font-size="11" x="115" y="384" text-anchor="end" fill="#bbf7d0" font-family="Syne,sans-serif">GTP</text>
+      <!-- Step 5 Succinate -->
+      <g id="ks5" style="cursor:pointer" onclick="krebsStep(5)">
+        <rect x="42" y="300" width="142" height="38" rx="8" fill="rgba(139,92,246,0.12)" stroke="#8b5cf6" stroke-width="1"/>
+        <text font-size="12" x="113" y="316" text-anchor="middle" fill="#c4b5fd" font-family="Syne,sans-serif" font-weight="700">5. Succinate (4C)</text>
+        <text font-size="10" x="113" y="330" text-anchor="middle" fill="#8b5cf6" font-family="Syne,sans-serif">Succinyl-CoA synthetase</text>
+      </g>
+      <path d="M100 300 Q82 240 112 194" fill="none" stroke="#3a3a50" stroke-width="1.5" marker-end="url(#karr)"/>
+      <text font-size="11" x="50" y="252" fill="#fbcfe8" font-family="Syne,sans-serif">FADH₂</text>
+      <!-- Step 6 Fumarate -->
+      <g id="ks6" style="cursor:pointer" onclick="krebsStep(6)">
+        <rect x="42" y="172" width="142" height="38" rx="8" fill="rgba(236,72,153,0.1)" stroke="#ec4899" stroke-width="1"/>
+        <text font-size="12" x="113" y="188" text-anchor="middle" fill="#fbcfe8" font-family="Syne,sans-serif" font-weight="700">6. Fumarate (4C)</text>
+        <text font-size="10" x="113" y="202" text-anchor="middle" fill="#ec4899" font-family="Syne,sans-serif">Succinate dehydrogenase</text>
+      </g>
+      <path d="M160 182 Q210 148 270 140" fill="none" stroke="#3a3a50" stroke-width="1.5" marker-end="url(#karr)"/>
+      <!-- Step 7 Malate -->
+      <g id="ks7" style="cursor:pointer" onclick="krebsStep(7)">
+        <rect x="140" y="102" width="130" height="38" rx="8" fill="rgba(236,72,153,0.1)" stroke="#ec4899" stroke-width="1"/>
+        <text font-size="12" x="205" y="118" text-anchor="middle" fill="#fbcfe8" font-family="Syne,sans-serif" font-weight="700">7. Malate (4C)</text>
+        <text font-size="10" x="205" y="132" text-anchor="middle" fill="#ec4899" font-family="Syne,sans-serif">Fumarase</text>
+      </g>
+      <path d="M270 118 Q272 116 270 116" fill="none" stroke="#3a3a50" stroke-width="1.5"/>
+      <!-- Step 8 Oxaloacetate -->
+      <g id="ks8" style="cursor:pointer" onclick="krebsStep(8)">
+        <rect x="40" y="50" width="165" height="38" rx="8" fill="rgba(20,184,166,0.12)" stroke="#14b8a6" stroke-width="2"/>
+        <text font-size="12" x="122" y="66" text-anchor="middle" fill="#99f6e4" font-family="Syne,sans-serif" font-weight="700">8. Oxaloacetate (4C)</text>
+        <text font-size="10" x="122" y="80" text-anchor="middle" fill="#14b8a6" font-family="Syne,sans-serif">Malate dehydrogenase</text>
+      </g>
+      <path d="M205 69 Q245 82 270 108" fill="none" stroke="#14b8a6" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#karr)"/>
+      <text font-size="11" x="340" y="226" text-anchor="middle" fill="#3a3a50" font-family="Syne,sans-serif">← Click any step →</text>
+      </svg>
+
+      <div class="krebs-info" id="krebs-info">
+        <div class="ki-title" id="ki-title">Click any step to see enzyme, products & regulation</div>
+        <div class="ki-body" id="ki-body">The Krebs cycle runs twice per glucose (once per Acetyl-CoA). Total per glucose: 6 NADH, 2 FADH₂, 2 GTP, 4 CO₂.</div>
+        <div class="ki-chips" id="ki-chips"></div>
+      </div>
+
+      <div class="krebs-totals">
+        <div class="kt"><div class="kt-n" style="color:#fde68a">3</div><div class="kt-l">NADH/turn</div></div>
+        <div class="kt"><div class="kt-n" style="color:#fbcfe8">1</div><div class="kt-l">FADH₂/turn</div></div>
+        <div class="kt"><div class="kt-n" style="color:#bbf7d0">1</div><div class="kt-l">GTP/turn</div></div>
+        <div class="kt"><div class="kt-n" style="color:#fca5a5">2</div><div class="kt-l">CO₂/turn</div></div>
+        <div class="kt"><div class="kt-n">×2</div><div class="kt-l">turns/glucose</div></div>
+      </div>
+
+      <div class="memory-trick" style="margin-top:16px;">
+        <div class="mt-label">Memory Trick — Where NADH is produced</div>
+        <div class="mt-text">NADH is produced at steps <strong style="color:#fde68a">3, 4, and 8</strong>. Remember: <strong style="color:#fde68a">"Three Fours ate NADH"</strong> → Steps 3, 4, 8</div>
+        <div class="mt-mnemonic">FADH₂ only at step 6 (Succinate → Fumarate) — "Six is Special for FADH₂"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DIAGRAM 3: LAC OPERON ===== -->
+  <div class="diagram-card reveal">
+    <div class="dc-header">
+      <div>
+        <div class="dc-num">DIAGRAM 03 · Molecular Biology / Genetics</div>
+        <div class="dc-title">Lac Operon — Gene Regulation in Prokaryotes</div>
+        <div class="dc-desc">The lac operon has 4 states based on glucose and lactose availability. Click each condition to see what happens to gene expression — the visual changes in real time.</div>
+      </div>
+      <div class="dc-badge">4 states · Toggle</div>
+    </div>
+    <div class="dc-body">
+      <div class="lac-controls">
+        <button class="lac-btn" id="lb1" onclick="lacState('neither')">No glucose, No lactose</button>
+        <button class="lac-btn" id="lb2" onclick="lacState('lactose')">No glucose + Lactose ✓</button>
+        <button class="lac-btn" id="lb3" onclick="lacState('glucose')">Glucose ✓, No lactose</button>
+        <button class="lac-btn" id="lb4" onclick="lacState('both')">Both glucose + lactose</button>
+      </div>
+
+      <svg id="lac-svg" width="100%" viewBox="0 0 680 260">
+      <defs><marker id="larr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+
+      <!-- DNA backbone -->
+      <line x1="30" y1="130" x2="650" y2="130" stroke="#3a3a50" stroke-width="2"/>
+
+      <!-- Promoter -->
+      <rect x="30" y="108" width="70" height="44" rx="6" fill="rgba(139,92,246,0.15)" stroke="#8b5cf6" stroke-width="1"/>
+      <text font-size="11" x="65" y="127" text-anchor="middle" fill="#c4b5fd" font-family="Syne,sans-serif" font-weight="700">P</text>
+      <text font-size="9" x="65" y="140" text-anchor="middle" fill="#8b5cf6" font-family="Syne,sans-serif">Promoter</text>
+
+      <!-- CAP site -->
+      <rect x="105" y="108" width="60" height="44" rx="6" fill="rgba(20,184,166,0.12)" stroke="#14b8a6" stroke-width="1" id="cap-box"/>
+      <text font-size="11" x="135" y="127" text-anchor="middle" fill="#99f6e4" font-family="Syne,sans-serif" font-weight="700">CAP</text>
+      <text font-size="9" x="135" y="140" text-anchor="middle" fill="#14b8a6" font-family="Syne,sans-serif">site</text>
+
+      <!-- Operator -->
+      <rect x="170" y="108" width="65" height="44" rx="6" fill="rgba(239,68,68,0.12)" stroke="#ef4444" stroke-width="1" id="op-box"/>
+      <text font-size="11" x="202" y="127" text-anchor="middle" fill="#fca5a5" font-family="Syne,sans-serif" font-weight="700">O</text>
+      <text font-size="9" x="202" y="140" text-anchor="middle" fill="#ef4444" font-family="Syne,sans-serif">Operator</text>
+
+      <!-- Structural genes -->
+      <rect x="240" y="108" width="100" height="44" rx="6" fill="rgba(34,197,94,0.1)" stroke="#22c55e" stroke-width="1" id="lacz-box"/>
+      <text font-size="11" x="290" y="127" text-anchor="middle" fill="#bbf7d0" font-family="Syne,sans-serif" font-weight="700">lacZ</text>
+      <text font-size="9" x="290" y="140" text-anchor="middle" fill="#22c55e" font-family="Syne,sans-serif">β-galactosidase</text>
+
+      <rect x="345" y="108" width="90" height="44" rx="6" fill="rgba(34,197,94,0.1)" stroke="#22c55e" stroke-width="1" id="lacy-box"/>
+      <text font-size="11" x="390" y="127" text-anchor="middle" fill="#bbf7d0" font-family="Syne,sans-serif" font-weight="700">lacY</text>
+      <text font-size="9" x="390" y="140" text-anchor="middle" fill="#22c55e" font-family="Syne,sans-serif">permease</text>
+
+      <rect x="440" y="108" width="90" height="44" rx="6" fill="rgba(34,197,94,0.1)" stroke="#22c55e" stroke-width="1" id="laca-box"/>
+      <text font-size="11" x="485" y="127" text-anchor="middle" fill="#bbf7d0" font-family="Syne,sans-serif" font-weight="700">lacA</text>
+      <text font-size="9" x="485" y="140" text-anchor="middle" fill="#22c55e" font-family="Syne,sans-serif">transacetylase</text>
+
+      <!-- Repressor protein -->
+      <rect id="rep-box" x="178" y="50" width="56" height="50" rx="8" fill="rgba(239,68,68,0.2)" stroke="#ef4444" stroke-width="1.5"/>
+      <text font-size="11" x="206" y="72" text-anchor="middle" fill="#fca5a5" font-family="Syne,sans-serif" font-weight="700">Rep</text>
+      <text font-size="9" x="206" y="85" text-anchor="middle" fill="#ef4444" font-family="Syne,sans-serif">BLOCKED</text>
+
+      <!-- CAP protein -->
+      <rect id="cap-prot" x="112" y="50" width="46" height="50" rx="8" fill="rgba(20,184,166,0.2)" stroke="#14b8a6" stroke-width="1.5"/>
+      <text font-size="11" x="135" y="72" text-anchor="middle" fill="#99f6e4" font-family="Syne,sans-serif" font-weight="700">CAP</text>
+      <text font-size="9" x="135" y="85" text-anchor="middle" fill="#14b8a6" font-family="Syne,sans-serif">OFF</text>
+
+      <!-- RNA Pol -->
+      <rect id="rnap-box" x="36" y="50" width="58" height="50" rx="8" fill="rgba(139,92,246,0.15)" stroke="#8b5cf6" stroke-width="1.5"/>
+      <text font-size="11" x="65" y="70" text-anchor="middle" fill="#c4b5fd" font-family="Syne,sans-serif" font-weight="700">RNA</text>
+      <text font-size="11" x="65" y="83" text-anchor="middle" fill="#c4b5fd" font-family="Syne,sans-serif" font-weight="700">Pol</text>
+
+      <!-- Transcription arrow (shown/hidden by JS) -->
+      <line id="tx-arrow" x1="170" y1="108" x2="550" y2="108" stroke="#22c55e" stroke-width="3" marker-end="url(#larr)" opacity="0" stroke-dasharray="8 4"/>
+
+      <!-- Expression status label -->
+      <text id="lac-status" font-size="14" x="340" y="220" text-anchor="middle" fill="#8080a0" font-family="Syne,sans-serif" font-weight="700">← Select a condition above</text>
+      <text id="lac-exp" font-size="12" x="340" y="242" text-anchor="middle" fill="#3a3a50" font-family="Syne,sans-serif"></text>
+      </svg>
+
+      <div id="lac-info" class="krebs-info" style="min-height:70px;">
+        <div class="ki-title">Select a condition to see lac operon regulation</div>
+        <div class="ki-body">The lac operon is controlled by two signals: repressor (lactose-sensitive) and CAP-cAMP (glucose-sensitive). Maximum expression requires lactose AND absence of glucose.</div>
+      </div>
+
+      <div class="memory-trick" style="margin-top:14px;">
+        <div class="mt-label">Memory Trick — Lac Operon Logic</div>
+        <div class="mt-text">Think of it like ordering food: You only order a <strong style="color:#99f6e4">big lactose meal</strong> when <strong style="color:#fde68a">glucose (your favourite food) is not available</strong>. When glucose IS present, you ignore lactose — why bother? The cell thinks the same way.</div>
+        <div class="mt-mnemonic">No glucose + Lactose = MAXIMUM expression (the cell is hungry AND lactose is available)</div>
+      </div>
+
+      <div class="sme-box" style="margin-top:14px;">
+        <div class="sme-label">SME Annotation — AI Frequently Errors Here</div>
+        <div class="sme-text">AI models often state that the lac operon is "ON when lactose is present" — this is INCOMPLETE. Maximum expression requires BOTH lactose AND absence of glucose (catabolite repression via CAP-cAMP). An evaluator must catch this partial answer and classify it as "Incomplete Reasoning."</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CERTIFICATIONS ========== -->
+<div id="certs" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+<div class="sec">
+  <div class="sec-tag reveal">Credentials</div>
+  <h2 class="reveal">Certifications &<br><em>Ongoing Training</em></h2>
+  <p class="sec-sub reveal">Edit your status below — click "Edit Mode" to update which are completed, enrolled, or planned.</p>
+
+  <div class="edit-bar reveal">
+    <span style="font-size:16px;">✏️</span>
+    <p>Edit Mode — click to toggle status on any certification card.</p>
+    <button class="edit-toggle" id="edit-btn" onclick="toggleEditMode()">Enable Edit Mode</button>
+  </div>
+
+  <div class="cert-grid reveal" id="cert-grid">
+
+    <!-- AI & ML -->
+    <div class="cert-card ai">
+      <span class="cert-cat cat-ai">AI & Machine Learning</span>
+      <div class="cert-name">Reinforcement Learning from Human Feedback (RLHF)</div>
+      <div class="cert-org">DeepLearning.AI</div>
+      <div class="cert-footer">
+        <span class="cert-status status-enrolled" onclick="cycleStatus(this)">Enrolled</span>
+        <span class="cert-yr">2026</span>
+      </div>
+    </div>
+
+    <div class="cert-card ai">
+      <span class="cert-cat cat-ai">AI & Machine Learning</span>
+      <div class="cert-name">Elements of AI</div>
+      <div class="cert-org">University of Helsinki</div>
+      <div class="cert-footer">
+        <span class="cert-status status-enrolled" onclick="cycleStatus(this)">Enrolled</span>
+        <span class="cert-yr">2026</span>
+      </div>
+    </div>
+
+    <div class="cert-card ai">
+      <span class="cert-cat cat-ai">AI & Machine Learning</span>
+      <div class="cert-name">Prompt Engineering for Developers</div>
+      <div class="cert-org">DeepLearning.AI / Coursera</div>
+      <div class="cert-footer">
+        <span class="cert-status status-enrolled" onclick="cycleStatus(this)">Enrolled</span>
+        <span class="cert-yr">2026</span>
+      </div>
+    </div>
+
+    <div class="cert-card ai">
+      <span class="cert-cat cat-ai">AI & Machine Learning</span>
+      <div class="cert-name">Natural Language Processing (NLP)</div>
+      <div class="cert-org">Kaggle</div>
+      <div class="cert-footer">
+        <span class="cert-status status-enrolled" onclick="cycleStatus(this)">Enrolled</span>
+        <span class="cert-yr">2026</span>
+      </div>
+    </div>
+
+    <div class="cert-card ai">
+      <span class="cert-cat cat-ai">AI & Machine Learning</span>
+      <div class="cert-name">Introduction to Game AI & Reinforcement Learning</div>
+      <div class="cert-org">Coursera</div>
+      <div class="cert-footer">
+        <span class="cert-status status-enrolled" onclick="cycleStatus(this)">Enrolled</span>
+        <span class="cert-yr">2026</span>
+      </div>
+    </div>
+
+    <div class="cert-card ai">
+      <span class="cert-cat cat-ai">AI & Machine Learning</span>
+      <div class="cert-name">AI for Everyone</div>
+      <div class="cert-org">DeepLearning.AI / Coursera</div>
+      <div class="cert-footer">
+        <span class="cert-status status-enrolled" onclick="cycleStatus(this)">Enrolled</span>
+        <span class="cert-yr">2026</span>
+      </div>
+    </div>
+
+    <div class="cert-card ai">
+      <span class="cert-cat cat-ai">AI & Machine Learning</span>
+      <div class="cert-name">AI Fluency for Educators</div>
+      <div class="cert-org">Anthropic</div>
+      <div class="cert-footer">
+        <span class="cert-status status-enrolled" onclick="cycleStatus(this)">Enrolled</span>
+        <span class="cert-yr">2026</span>
+      </div>
+    </div>
+
+    <div class="cert-card ai">
+      <span class="cert-cat cat-ai">AI & Machine Learning</span>
+      <div class="cert-name">Teaching the AI Fluency Framework</div>
+      <div class="cert-org">Anthropic</div>
+      <div class="cert-footer">
+        <span class="cert-status status-enrolled" onclick="cycleStatus(this)">Enrolled</span>
+        <span class="cert-yr">2026</span>
+      </div>
+    </div>
+
+    <div class="cert-card ai">
+      <span class="cert-cat cat-ai">AI & Machine Learning</span>
+      <div class="cert-name">Introduction to Prompt Engineering</div>
+      <div class="cert-org">University of Helsinki</div>
+      <div class="cert-footer">
+        <span class="cert-status status-enrolled" onclick="cycleStatus(this)">Enrolled</span>
+        <span class="cert-yr">2026</span>
+      </div>
+    </div>
+
+    <!-- Bioinformatics -->
+    <div class="cert-card bio">
+      <span class="cert-cat cat-bio">Bioinformatics</span>
+      <div class="cert-name">Bioinformatics</div>
+      <div class="cert-org">NPTEL</div>
+      <div class="cert-footer">
+        <span class="cert-status status-enrolled" onclick="cycleStatus(this)">Enrolled</span>
+        <span class="cert-yr">2026</span>
+      </div>
+    </div>
+
+    <!-- Health & Research -->
+    <div class="cert-card health">
+      <span class="cert-cat cat-health">Public Health & Research</span>
+      <div class="cert-name">Good Clinical Practice (GCP)</div>
+      <div class="cert-org">National Institutes of Health (NIH)</div>
+      <div class="cert-footer">
+        <span class="cert-status status-enrolled" onclick="cycleStatus(this)">Enrolled</span>
+        <span class="cert-yr">2026</span>
+      </div>
+    </div>
+
+    <div class="cert-card health">
+      <span class="cert-cat cat-health">Public Health & Research</span>
+      <div class="cert-name">Public Health Essentials</div>
+      <div class="cert-org">World Health Organization (WHO)</div>
+      <div class="cert-footer">
+        <span class="cert-status status-enrolled" onclick="cycleStatus(this)">Enrolled</span>
+        <span class="cert-yr">2026</span>
+      </div>
+    </div>
+
+    <div class="cert-card health">
+      <span class="cert-cat cat-health">Public Health & Research</span>
+      <div class="cert-name">Systematic Review & Meta-Analysis</div>
+      <div class="cert-org">Coursera</div>
+      <div class="cert-footer">
+        <span class="cert-status status-enrolled" onclick="cycleStatus(this)">Enrolled</span>
+        <span class="cert-yr">2026</span>
+      </div>
+    </div>
+
+    <div class="cert-card health">
+      <span class="cert-cat cat-health">Public Health & Research</span>
+      <div class="cert-name">Medical Writing</div>
+      <div class="cert-org">Coursera</div>
+      <div class="cert-footer">
+        <span class="cert-status status-enrolled" onclick="cycleStatus(this)">Enrolled</span>
+        <span class="cert-yr">2026</span>
+      </div>
+    </div>
+
+    <!-- Education -->
+    <div class="cert-card edu">
+      <span class="cert-cat cat-edu">Instructional Design</span>
+      <div class="cert-name">Instructional Design & Curriculum Development</div>
+      <div class="cert-org">Association for Talent Development (ATD)</div>
+      <div class="cert-footer">
+        <span class="cert-status status-enrolled" onclick="cycleStatus(this)">Enrolled</span>
+        <span class="cert-yr">2026</span>
+      </div>
+    </div>
+
+    <div class="cert-card edu">
+      <span class="cert-cat cat-edu">Instructional Design</span>
+      <div class="cert-name">Instructional Design Foundations</div>
+      <div class="cert-org">University of Illinois / Coursera</div>
+      <div class="cert-footer">
+        <span class="cert-status status-enrolled" onclick="cycleStatus(this)">Enrolled</span>
+        <span class="cert-yr">2026</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:16px;font-size:12px;color:var(--muted);font-family:var(--mono);">
+    Click status badge to cycle: Enrolled → Completed → Planned → Enrolled
+  </div>
+</div>
+</div>
+
+<!-- CONTACT -->
+<div id="contact" class="contact-strip">
+  <div class="sec-tag" style="margin-bottom:12px;">Contact</div>
+  <h2>Let's build<br><em>something real</em></h2>
+  <div class="chip-row">
+    <a href="mailto:y3318105@gmail.com" class="cchip"><div class="cchip-icon">✉</div><div><div style="font-size:10px;color:var(--muted);margin-bottom:2px;">Email</div>y3318105@gmail.com</div></a>
+    <a href="tel:+917400577948" class="cchip"><div class="cchip-icon">📞</div><div><div style="font-size:10px;color:var(--muted);margin-bottom:2px;">Phone</div>+91 7400577948</div></a>
+    <a href="https://www.linkedin.com/in/yash-sahu-5010643ab" target="_blank" class="cchip"><div class="cchip-icon">🔗</div><div><div style="font-size:10px;color:var(--muted);margin-bottom:2px;">LinkedIn</div>yash-sahu-5010643ab</div></a>
+    <a href="https://academia.edu/165214819/Yash_Sahu_ResearchPaper_BilawaliLake_FINAL" target="_blank" class="cchip"><div class="cchip-icon">📄</div><div><div style="font-size:10px;color:var(--muted);margin-bottom:2px;">Published Research</div>Academia.edu</div></a>
+  </div>
+</div>
+
+<footer>© 2026 Yash Sahu · Biology SME & AI Evaluator · Indore · github.com/YAH00024/yash-sahu-biology-sme</footer>
+
+<script>
+/* ===== CURSOR ===== */
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx-6+'px';cur.style.top=my-6+'px';});
+(function anim(){rx+=(mx-rx)*0.1;ry+=(my-ry)*0.1;ring.style.left=rx-20+'px';ring.style.top=ry-20+'px';requestAnimationFrame(anim);})();
+
+/* ===== PARTICLES ===== */
+const pWrap=document.getElementById('particles');
+const colors=['#8b5cf6','#14b8a6','#22c55e','#f59e0b','#ec4899'];
+for(let i=0;i<18;i++){
+  const p=document.createElement('div');
+  const sz=Math.random()*4+2;
+  p.className='particle';
+  p.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}vw;background:${colors[Math.floor(Math.random()*colors.length)]};opacity:${Math.random()*0.4+0.1};animation-duration:${Math.random()*20+12}s;animation-delay:-${Math.random()*15}s;`;
+  pWrap.appendChild(p);
+}
+
+/* ===== NAV SCROLL ===== */
+window.addEventListener('scroll',()=>{
+  document.querySelector('nav').style.background=window.scrollY>60?'rgba(12,12,15,0.95)':'transparent';
+});
+
+/* ===== SCROLL REVEAL ===== */
+const obs=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('vis'),i*80);obs.unobserve(e.target);}});},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+/* ===== DNA STEPPER ===== */
+const dnaPanels=document.querySelectorAll('#dna-panels .panel-content');
+const dnaDotsEl=document.getElementById('dna-dots');
+const dnaLbl=document.getElementById('dna-lbl');
+let dnaCur=0;
+dnaPanels.forEach((_,i)=>{
+  const d=document.createElement('div');d.className='sdot'+(i===0?' active':'');
+  d.onclick=()=>dnaGo(i);dnaDotsEl.appendChild(d);
+});
+function dnaGo(n){dnaPanels[dnaCur].classList.remove('active');dnaDotsEl.children[dnaCur].classList.remove('active');dnaCur=((n%dnaPanels.length)+dnaPanels.length)%dnaPanels.length;dnaPanels[dnaCur].classList.add('active');dnaDotsEl.children[dnaCur].classList.add('active');dnaLbl.textContent=`Step ${dnaCur+1} of ${dnaPanels.length}`;};
+function dnaNav(d){dnaGo(dnaCur+d);}
+
+/* ===== KREBS ===== */
+const kData={
+  1:{t:"Step 1 — Citrate synthase",b:"Oxaloacetate (4C) + Acetyl-CoA (2C) → Citrate (6C). Irreversible. Inhibited by ATP, NADH, and citrate itself (feedback). This condensation step commits the acetyl group to the cycle.",chips:[]},
+  2:{t:"Step 2 — Aconitase",b:"Citrate → Isocitrate via cis-aconitate intermediate. Aconitase contains an Fe-S cluster. This isomerisation repositions the hydroxyl group for the next oxidative step. Inhibited by fluorocitrate (aconitase poison).",chips:[]},
+  3:{t:"Step 3 — Isocitrate dehydrogenase (KEY regulatory step)",b:"Isocitrate → α-Ketoglutarate. First oxidative decarboxylation — CO₂ released, NAD⁺ → NADH. Activated by ADP and Ca²⁺. Strongly inhibited by NADH and ATP. This is a major flux control point.",chips:["CO₂","NADH"]},
+  4:{t:"Step 4 — α-Ketoglutarate dehydrogenase complex",b:"α-KG → Succinyl-CoA. Second oxidative decarboxylation — CO₂ released, NAD⁺ → NADH. Similar structure to pyruvate dehydrogenase complex. Inhibited by its own products (succinyl-CoA, NADH). Activated by Ca²⁺.",chips:["CO₂","NADH"]},
+  5:{t:"Step 5 — Succinyl-CoA synthetase (Substrate-level phosphorylation!)",b:"Succinyl-CoA → Succinate. GTP produced directly (substrate-level phosphorylation) — the ONLY step producing high-energy phosphate directly in the cycle. CoA is released.",chips:["GTP"]},
+  6:{t:"Step 6 — Succinate dehydrogenase (also Complex II of ETC!)",b:"Succinate → Fumarate. FAD (not NAD⁺) accepts electrons → FADH₂. This enzyme is embedded in the inner mitochondrial membrane — it is also Complex II of the electron transport chain. Inhibited by oxaloacetate.",chips:["FADH₂"]},
+  7:{t:"Step 7 — Fumarase",b:"Fumarate → L-Malate. Water added across the double bond (hydration). Stereospecific — only L-malate produced. No cofactor required. Simple but essential for regenerating malate.",chips:[]},
+  8:{t:"Step 8 — Malate dehydrogenase (completes the cycle)",b:"Malate → Oxaloacetate. NAD⁺ → NADH. Thermodynamically unfavourable in isolation (ΔG > 0) — driven forward by the very low oxaloacetate concentration maintained by citrate synthase in step 1.",chips:["NADH"]}
+};
+const chipCls={CO₂:'kc-co2',NADH:'kc-nadh',FADH₂:'kc-fadh',GTP:'kc-gtp'};
+function krebsStep(n){
+  const d=kData[n];
+  document.getElementById('ki-title').textContent=d.t;
+  document.getElementById('ki-body').textContent=d.b;
+  document.getElementById('ki-chips').innerHTML=d.chips.map(c=>`<span class="kchip ${chipCls[c]}">${c}</span>`).join('');
+  for(let i=1;i<=8;i++){
+    const el=document.getElementById('ks'+i);
+    if(el)el.querySelectorAll('rect').forEach(r=>{r.style.strokeWidth=i===n?'3':'1';});
+  }
+}
+
+/* ===== LAC OPERON ===== */
+const lacStates={
+  neither:{status:'OFF — Repressor BLOCKS',exp:'No lactose = repressor bound to operator. No glucose = cAMP high but no CAP activation without lactose.',tx:0,rep:'BLOCKED',cap:'OFF',statusCls:'state-off'},
+  lactose:{status:'ON — MAXIMUM expression',exp:'Lactose present = allolactose removes repressor. No glucose = high cAMP + CAP activated. Both conditions met → maximum transcription.',tx:1,rep:'REMOVED',cap:'ACTIVE',statusCls:'state-on'},
+  glucose:{status:'OFF — Catabolite repression',exp:'Glucose present = low cAMP = CAP inactive = no enhancement. Even if repressor is removed, transcription is very low without CAP activation.',tx:0,rep:'OFF',cap:'INACTIVE',statusCls:'state-off'},
+  both:{status:'LOW — Partial expression',exp:'Lactose removes repressor (transcription possible) but glucose keeps cAMP low so CAP is inactive. Expression is low — cell prefers glucose.',tx:0.3,rep:'REMOVED',cap:'INACTIVE',statusCls:'state-off'}
+};
+function lacState(s){
+  const d=lacStates[s];
+  document.getElementById('lac-arrow').style.opacity=d.tx;
+  document.getElementById('lac-status').textContent=d.status;
+  document.getElementById('lac-status').style.fill=d.tx>0.5?'#22c55e':'#ef4444';
+  document.getElementById('lac-exp').textContent=d.exp;
+  document.getElementById('ki-title');
+  document.getElementById('lac-info').innerHTML=`<div class="ki-title">${d.status}</div><div class="ki-body">${d.exp}</div>`;
+  ['lb1','lb2','lb3','lb4'].forEach(id=>{
+    const btn=document.getElementById(id);btn.className='lac-btn';
+  });
+  const map={neither:'lb1',lactose:'lb2',glucose:'lb3',both:'lb4'};
+  const cls={neither:'active-neither',lactose:'active-lactose',glucose:'active-glucose',both:'active-both'};
+  document.getElementById(map[s]).classList.add(cls[s]);
+}
+
+/* ===== CERT EDIT MODE ===== */
+let editMode=false;
+const statuses=['Enrolled','Completed','Planned'];
+const statusCls=['status-enrolled','status-done','status-planned'];
+function cycleStatus(el){
+  if(!editMode)return;
+  const cur=statuses.indexOf(el.textContent);
+  const next=(cur+1)%statuses.length;
+  el.textContent=statuses[next];
+  el.className='cert-status '+statusCls[next];
+}
+function toggleEditMode(){
+  editMode=!editMode;
+  const btn=document.getElementById('edit-btn');
+  btn.textContent=editMode?'Save Changes':'Enable Edit Mode';
+  btn.style.background=editMode?'#14b8a6':'#8b5cf6';
+  document.querySelectorAll('.cert-status').forEach(el=>{
+    el.style.cursor=editMode?'pointer':'default';
+    el.title=editMode?'Click to change status':'';
+  });
+}
+</script>
+</body>
+</html>

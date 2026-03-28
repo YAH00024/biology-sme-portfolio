@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biology Q&A Dataset — Yash Sahu</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0a0f0d; --surface:#111a15; --card:#162019; --border:#1f3025; --green:#4ade80; --green-dim:#2d6e47; --green-glow:rgba(74,222,128,0.10); --text:#e8f5ec; --muted:#7a9e85; --accent:#a3e4b5; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-weight:300; }
+  .hero { padding:72px 60px 48px; max-width:1100px; margin:0 auto; }
+  .tag { display:inline-flex; align-items:center; gap:8px; background:var(--green-glow); border:1px solid var(--green-dim); border-radius:100px; padding:6px 16px; font-size:11px; letter-spacing:0.12em; color:var(--green); text-transform:uppercase; margin-bottom:24px; }
+  .tag::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse 2s ease infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+  h1 { font-family:'DM Serif Display',serif; font-size:clamp(36px,5vw,64px); line-height:1.1; margin-bottom:16px; }
+  h1 em { font-style:italic; color:var(--green); }
+  .subtitle { font-size:15px; color:var(--muted); line-height:1.8; max-width:680px; margin-bottom:32px; }
+  .meta-bar { background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:24px 60px; display:flex; gap:40px; flex-wrap:wrap; }
+  .meta-item { font-size:13px; color:var(--muted); }
+  .meta-item strong { color:var(--accent); display:block; font-size:15px; font-weight:500; }
+  .section { max-width:1100px; margin:0 auto; padding:60px; }
+  .filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:28px; }
+  .fbtn { font-size:12px; padding:6px 16px; border-radius:100px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.2s; }
+  .fbtn.active, .fbtn:hover { background:var(--green-glow); border-color:var(--green-dim); color:var(--green); }
+  .cards { display:flex; flex-direction:column; gap:20px; }
+  .qa-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:28px 32px; transition:border-color 0.2s; }
+  .qa-card:hover { border-color:var(--green-dim); }
+  .card-header { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+  .q-num { background:var(--green-glow); border:1px solid var(--green-dim); color:var(--green); font-size:12px; font-weight:500; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .domain-badge { font-size:11px; padding:3px 12px; border-radius:100px; }
+  .badge-mol { background:rgba(130,100,255,0.15); color:#b39dff; }
+  .badge-cell { background:rgba(56,150,255,0.12); color:#7ec0ff; }
+  .badge-eco { background:rgba(74,222,128,0.12); color:#6ee7a0; }
+  .badge-bio { background:rgba(255,180,50,0.12); color:#ffd080; }
+  .badge-gen { background:rgba(255,100,160,0.12); color:#ffaad4; }
+  .diff-badge { font-size:11px; padding:3px 10px; border-radius:100px; margin-left:auto; }
+  .diff-easy { background:rgba(74,222,128,0.1); color:#4ade80; }
+  .diff-medium { background:rgba(255,180,50,0.1); color:#ffd080; }
+  .diff-hard { background:rgba(255,80,80,0.1); color:#ff8080; }
+  .question { font-size:15px; color:var(--text); line-height:1.6; margin-bottom:16px; font-weight:400; }
+  .answer-label { font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--green); margin-bottom:8px; }
+  .answer { font-size:13px; color:var(--muted); line-height:1.8; padding:16px; background:rgba(74,222,128,0.04); border:1px solid rgba(74,222,128,0.08); border-radius:8px; }
+  .tags-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+  .topic-tag { font-size:11px; padding:2px 10px; border-radius:6px; background:rgba(255,255,255,0.05); color:var(--muted); }
+  footer { text-align:center; padding:32px; font-size:12px; color:var(--muted); opacity:0.5; border-top:1px solid var(--border); margin-top:40px; }
+  @media(max-width:768px){ .hero,.section,.meta-bar{padding:40px 20px;} }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="tag">Project 2 — Q&A Dataset</div>
+  <h1>Biology <em>Q&A Dataset</em></h1>
+  <p class="subtitle">A curated set of 10 undergraduate-level biology questions with gold-standard answers, domain tags, and topic keywords. Designed to demonstrate the ability to create structured, accurate biological training data for AI systems.</p>
+</div>
+
+<div class="meta-bar">
+  <div class="meta-item"><strong>Yash Sahu</strong>Dataset Author / Biology SME</div>
+  <div class="meta-item"><strong>10 Q&A Pairs</strong>Curated</div>
+  <div class="meta-item"><strong>5 Domains</strong>Tagged</div>
+  <div class="meta-item"><strong>UG Level</strong>Difficulty range: Easy → Hard</div>
+  <div class="meta-item"><strong>2025</strong>Year</div>
+</div>
+
+<div class="section">
+  <div class="filters">
+    <button class="fbtn active" onclick="filter('all',this)">All</button>
+    <button class="fbtn" onclick="filter('Molecular Biology',this)">Molecular Biology</button>
+    <button class="fbtn" onclick="filter('Genetics',this)">Genetics</button>
+    <button class="fbtn" onclick="filter('Cell Biology',this)">Cell Biology</button>
+    <button class="fbtn" onclick="filter('Ecology',this)">Ecology</button>
+    <button class="fbtn" onclick="filter('Biochemistry',this)">Biochemistry</button>
+  </div>
+  <div class="cards" id="cards"></div>
+</div>
+
+<footer>Biology Q&A Dataset · Yash Sahu · Indore, Madhya Pradesh · 2025</footer>
+
+<script>
+const domainClass = { 'Molecular Biology':'badge-mol','Cell Biology':'badge-cell','Ecology':'badge-eco','Biochemistry':'badge-bio','Genetics':'badge-gen' };
+const diffClass = { 'Easy':'diff-easy','Medium':'diff-medium','Hard':'diff-hard' };
+
+const data = [
+  { id:1, domain:'Molecular Biology', difficulty:'Medium', question:'Describe the central dogma of molecular biology and its exceptions.', answer:'The central dogma states that genetic information flows from DNA → RNA → Protein. DNA is transcribed into mRNA, which is then translated into protein. Exceptions include: (1) Reverse transcription — RNA viruses (retroviruses like HIV) use reverse transcriptase to copy RNA back into DNA. (2) RNA replication — some RNA viruses replicate their RNA genome directly. (3) Prions — protein-only infectious agents that alter protein folding without nucleic acid, challenging the dogma of nucleic-acid-based information transfer.', tags:['Central Dogma','Transcription','Translation','Reverse Transcription','Retroviruses','Prions'] },
+  { id:2, domain:'Genetics', difficulty:'Easy', question:'What is the difference between genotype and phenotype? Give an example.', answer:'Genotype refers to the genetic makeup of an organism — the specific alleles present at a locus (e.g., TT, Tt, or tt). Phenotype is the observable physical or biochemical characteristic that results from the interaction of the genotype with the environment. Example: In pea plants, the genotypes TT and Tt both produce the same phenotype (tall plant) because T is dominant over t. Only the genotype tt produces a short (dwarf) phenotype.', tags:['Genotype','Phenotype','Dominance','Alleles','Mendel'] },
+  { id:3, domain:'Cell Biology', difficulty:'Hard', question:'Explain the mechanism of the sodium-potassium (Na+/K+) ATPase pump and its physiological significance.', answer:'The Na+/K+ ATPase is a transmembrane protein that actively transports 3 Na+ ions out of the cell and 2 K+ ions into the cell per ATP hydrolysed. This process maintains the resting membrane potential (approximately -70mV in neurons), regulates cell volume by controlling osmotic pressure, and creates the electrochemical gradients necessary for secondary active transport of glucose and amino acids. The pump is electrogenic — it generates a net negative charge inside the cell. In neurons, it is essential for restoring ion gradients after action potentials.', tags:['Active Transport','Na+/K+ ATPase','Membrane Potential','Action Potential','Neurophysiology','ATP'] },
+  { id:4, domain:'Ecology', difficulty:'Easy', question:'What is the difference between a food chain and a food web?', answer:'A food chain is a linear sequence showing the transfer of energy from one organism to the next — e.g., Grass → Grasshopper → Frog → Snake → Eagle. A food web is a more realistic, complex network of interconnected food chains within an ecosystem, showing the multiple feeding relationships between organisms. Food webs provide ecosystem stability — if one species is lost, energy can still flow through alternate pathways. Food chains are simplified models useful for studying individual trophic levels and energy loss (approximately 10% efficiency per level).', tags:['Food Chain','Food Web','Trophic Levels','Energy Flow','Ecosystem'] },
+  { id:5, domain:'Biochemistry', difficulty:'Medium', question:'What is the difference between competitive and non-competitive enzyme inhibition?', answer:'In competitive inhibition, the inhibitor resembles the substrate and binds reversibly to the active site, blocking substrate access. Effect on kinetics: Km increases (apparent), Vmax unchanged — can be overcome by high substrate concentration. In non-competitive inhibition, the inhibitor binds to an allosteric site (not the active site), changing enzyme conformation and reducing catalytic efficiency. Effect on kinetics: Vmax decreases, Km unchanged — cannot be overcome by increasing substrate. Example: Statins competitively inhibit HMG-CoA reductase; cyanide non-competitively inhibits cytochrome c oxidase.', tags:['Enzyme Inhibition','Competitive','Non-competitive','Km','Vmax','Allosteric'] },
+  { id:6, domain:'Molecular Biology', difficulty:'Hard', question:'What are the differences between prokaryotic and eukaryotic gene regulation?', answer:'Prokaryotic gene regulation primarily occurs at the transcriptional level using operons (e.g., lac operon, trp operon). Genes are organised in polycistronic mRNAs, and regulation is rapid and direct — e.g., the lac repressor binds the operator to block RNA polymerase. Eukaryotic gene regulation is more complex and multilevel: it includes chromatin remodelling (histone modification, DNA methylation), transcription factor binding to enhancers/promoters (often far from the gene), post-transcriptional regulation (alternative splicing, RNA stability), translational control, and post-translational modification. Eukaryotic genes are monocistronic, and nuclear envelope separation of transcription and translation adds additional regulatory steps.', tags:['Gene Regulation','Operon','Lac Operon','Transcription Factors','Epigenetics','Chromatin'] },
+  { id:7, domain:'Cell Biology', difficulty:'Medium', question:'What is the role of lysosomes in cellular homeostasis?', answer:'Lysosomes are membrane-bound organelles containing approximately 60 hydrolytic enzymes that function optimally at pH 4.5-5 (maintained by H+ ATPase proton pumps). Their roles include: (1) Autophagy — degradation of damaged organelles and proteins via autophagosomes; (2) Phagocytosis — digestion of engulfed pathogens and cellular debris in immune cells; (3) Receptor recycling — degradation of internalised receptors; (4) Apoptosis — lysosomal membrane permeabilisation releases cathepsins that activate cell death pathways. Lysosomal storage diseases (e.g., Gaucher\'s disease) result from deficiencies in specific lysosomal enzymes, causing toxic substrate accumulation.', tags:['Lysosomes','Autophagy','Phagocytosis','Hydrolytic Enzymes','Lysosomal Storage Disease','Homeostasis'] },
+  { id:8, domain:'Genetics', difficulty:'Medium', question:'Explain sex-linked inheritance and give an example of an X-linked recessive disorder.', answer:'Sex-linked inheritance refers to traits controlled by genes located on sex chromosomes (X or Y). X-linked recessive disorders are more commonly expressed in males (XY) because males have only one X chromosome — a single recessive allele is sufficient for expression. Females (XX) are typically carriers if one allele is recessive, requiring two copies for expression. Classic example: Haemophilia A (Factor VIII deficiency). A carrier mother (X^H X^h) has a 50% chance of passing the recessive allele to sons, who will be affected, and to daughters, who become carriers. Punnett square analysis confirms this inheritance pattern.', tags:['Sex-Linked Inheritance','X-Linked','Haemophilia','Carrier','Punnett Square','Recessive'] },
+  { id:9, domain:'Ecology', difficulty:'Hard', question:'What is the competitive exclusion principle and what factors allow species coexistence?', answer:'The competitive exclusion principle (Gause\'s Law) states that two species competing for identical ecological resources cannot coexist indefinitely — the superior competitor will eventually displace the other. However, species coexistence is possible through: (1) Niche differentiation — species partition resources by time, space, or resource type; (2) Frequency-dependent selection — rare species have a competitive advantage; (3) Keystone predation — predators reduce dominant competitors, freeing space for others; (4) Disturbance — periodic disturbances prevent competitive equilibrium (intermediate disturbance hypothesis); (5) Spatial heterogeneity — patchy environments allow multiple microhabitats. Example: Warblers in coniferous forests coexist by foraging at different canopy levels.', tags:['Competitive Exclusion','Niche','Coexistence','Gause\'s Law','Keystone Species','Biodiversity'] },
+  { id:10, domain:'Biochemistry', difficulty:'Easy', question:'What is the significance of the pH of blood being maintained at 7.4?', answer:'Blood pH is maintained at 7.35–7.45 through multiple buffer systems: (1) Bicarbonate buffer (H2CO3/HCO3-) — the primary system; CO2 produced by respiration is converted to carbonic acid and regulated by breathing rate; (2) Phosphate buffer (H2PO4-/HPO42-) — important in kidneys and intracellular fluid; (3) Protein buffer — haemoglobin and plasma proteins act as weak acids/bases. Deviation from this range causes acidosis (<7.35) or alkalosis (>7.45), both life-threatening. At pH 7.4, enzyme activity is optimal, haemoglobin binds oxygen efficiently, and membrane ion channels function correctly. Even a shift of ±0.4 pH units can be fatal.', tags:['Blood pH','Buffer Systems','Bicarbonate Buffer','Haemoglobin','Homeostasis','Acidosis','Alkalosis'] }
+];
+
+let activeFilter = 'all';
+function filter(domain, btn) {
+  activeFilter = domain;
+  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+function render() {
+  const rows = activeFilter === 'all' ? data : data.filter(d => d.domain === activeFilter);
+  document.getElementById('cards').innerHTML = rows.map(d => `
+    <div class="qa-card">
+      <div class="card-header">
+        <div class="q-num">${d.id}</div>
+        <span class="domain-badge ${domainClass[d.domain]}">${d.domain}</span>
+        <span class="diff-badge ${diffClass[d.difficulty]}">${d.difficulty}</span>
+      </div>
+      <div class="question">Q: ${d.question}</div>
+      <div class="answer-label">Gold-standard answer</div>
+      <div class="answer">${d.answer}</div>
+      <div class="tags-row">${d.tags.map(t=>`<span class="topic-tag">${t}</span>`).join('')}</div>
+    </div>`).join('');
+}
+render();
+</script>
+</body>
+</html>

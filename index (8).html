@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yash Sahu — Biology SME & AI Evaluator</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============ RESET & BASE ============ */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --ink:#0d0d0d;--paper:#f5f2eb;--cream:#ede9df;--warm:#e8e2d5;
+  --green:#1a6b3c;--green-light:#d4edda;--green-mid:#4caf76;
+  --red-light:#fde8e8;--amber-light:#fef3cd;
+  --text:#1a1a1a;--muted:#6b6b6b;--border:#d4cfc6;
+  --card:#ffffff;--surface:#faf8f4;
+  --mono:'JetBrains Mono',monospace;
+  --serif:'Instrument Serif',serif;
+  --sans:'Syne',sans-serif;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;cursor:none;}
+
+/* ============ CUSTOM CURSOR ============ */
+.cursor{position:fixed;width:10px;height:10px;background:var(--green);border-radius:50%;pointer-events:none;z-index:9999;transition:transform 0.15s ease;mix-blend-mode:multiply;}
+.cursor-ring{position:fixed;width:36px;height:36px;border:1.5px solid var(--green);border-radius:50%;pointer-events:none;z-index:9998;transition:all 0.08s ease;mix-blend-mode:multiply;}
+body:hover .cursor{transform:scale(1);}
+a:hover~.cursor,.btn:hover~.cursor{transform:scale(2);}
+
+/* ============ NAV ============ */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 60px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid transparent;transition:all 0.3s;}
+nav.scrolled{background:rgba(245,242,235,0.96);border-color:var(--border);backdrop-filter:blur(12px);}
+.nav-logo{font-family:var(--sans);font-weight:800;font-size:15px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink);}
+.nav-links{display:flex;gap:36px;list-style:none;}
+.nav-links a{font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;letter-spacing:0.04em;transition:color 0.2s;}
+.nav-links a:hover{color:var(--green);}
+.nav-cta{font-size:12px;font-weight:600;background:var(--ink);color:var(--paper);padding:9px 20px;border-radius:100px;text-decoration:none;letter-spacing:0.06em;text-transform:uppercase;transition:all 0.2s;}
+.nav-cta:hover{background:var(--green);}
+
+/* ============ HERO ============ */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:120px 60px 80px;gap:60px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;right:-200px;top:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(26,107,60,0.07) 0%,transparent 70%);pointer-events:none;}
+.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
+.eyebrow-dot{width:8px;height:8px;background:var(--green-mid);border-radius:50%;animation:breathe 2.5s ease-in-out infinite;}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.4);opacity:0.6;}}
+.eyebrow-text{font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--green);}
+h1{font-family:var(--serif);font-size:clamp(52px,6vw,88px);line-height:1.0;font-weight:400;color:var(--ink);margin-bottom:28px;}
+h1 em{font-style:italic;color:var(--green);}
+.hero-desc{font-size:17px;color:var(--muted);line-height:1.75;max-width:480px;margin-bottom:40px;}
+.hero-btns{display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
+.btn-dark{background:var(--ink);color:var(--paper);padding:14px 32px;border-radius:100px;font-size:13px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;text-decoration:none;transition:all 0.25s;display:inline-flex;align-items:center;gap:8px;}
+.btn-dark:hover{background:var(--green);transform:translateY(-2px);}
+.btn-out{border:1.5px solid var(--border);color:var(--muted);padding:13px 28px;border-radius:100px;font-size:13px;font-weight:500;text-decoration:none;transition:all 0.25s;}
+.btn-out:hover{border-color:var(--green);color:var(--green);}
+.hero-right{position:relative;}
+.hero-card-stack{position:relative;height:420px;}
+.hc{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:0 4px 24px rgba(0,0,0,0.07);}
+.hc-1{width:300px;top:0;right:40px;animation:float1 5s ease-in-out infinite;}
+.hc-2{width:260px;top:160px;right:0;animation:float2 6s ease-in-out infinite;}
+.hc-3{width:240px;top:260px;right:80px;animation:float1 4s 1s ease-in-out infinite;}
+@keyframes float1{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+@keyframes float2{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.hc-label{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.hc-verdict{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:100px;}
+.v-correct{background:var(--green-light);color:#1a6b3c;}
+.v-error{background:var(--red-light);color:#c0392b;}
+.v-partial{background:var(--amber-light);color:#8a6500;}
+.hc-q{font-size:13px;color:var(--text);line-height:1.5;margin:10px 0;}
+.hc-err{font-size:11px;color:var(--muted);font-family:var(--mono);}
+
+/* ============ TICKER ============ */
+.ticker{background:var(--ink);color:var(--paper);padding:14px 0;overflow:hidden;white-space:nowrap;}
+.ticker-inner{display:inline-flex;animation:ticker 25s linear infinite;}
+.ticker-item{padding:0 40px;font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;opacity:0.7;}
+.ticker-item span{color:var(--green-mid);margin-right:40px;}
+@keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* ============ SECTION BASE ============ */
+.section{max-width:1200px;margin:0 auto;padding:100px 60px;}
+.section-alt{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.section-alt .section{padding:100px 60px;}
+.sec-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:56px;gap:40px;}
+.sec-label{font-size:11px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--green);margin-bottom:12px;}
+h2{font-family:var(--serif);font-size:clamp(36px,4vw,54px);font-weight:400;line-height:1.1;color:var(--ink);}
+h2 em{font-style:italic;color:var(--green);}
+.sec-note{font-size:14px;color:var(--muted);max-width:340px;text-align:right;line-height:1.6;}
+
+/* ============ PROOF SECTION ============ */
+.proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.proof-item{background:var(--card);padding:36px;transition:background 0.2s;}
+.proof-item:hover{background:var(--surface);}
+.proof-num{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:16px;letter-spacing:0.06em;}
+.proof-title{font-size:18px;font-weight:600;color:var(--ink);margin-bottom:10px;}
+.proof-body{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:18px;}
+.proof-badge{display:inline-flex;align-items:center;gap:8px;background:var(--green-light);color:var(--green);font-size:12px;font-weight:600;padding:6px 14px;border-radius:100px;}
+.proof-badge-icon{font-size:14px;}
+.proof-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--green);text-decoration:none;margin-top:14px;border-bottom:1.5px solid transparent;transition:border-color 0.2s;padding-bottom:1px;}
+.proof-link:hover{border-color:var(--green);}
+
+/* ============ PROJECT CASE STUDIES ============ */
+.case-study{margin-bottom:4px;}
+.cs-toggle{width:100%;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px 36px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all 0.2s;text-align:left;}
+.cs-toggle:hover{border-color:var(--green);background:var(--surface);}
+.cs-toggle.open{border-radius:14px 14px 0 0;border-color:var(--green);}
+.cs-left{display:flex;align-items:center;gap:20px;}
+.cs-num{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:0.06em;flex-shrink:0;}
+.cs-info{}
+.cs-tag{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:4px;}
+.cs-title{font-size:18px;font-weight:600;color:var(--ink);}
+.cs-pills{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.cs-pill{font-size:11px;padding:2px 10px;border-radius:100px;background:var(--cream);color:var(--muted);border:1px solid var(--border);}
+.cs-right{display:flex;align-items:center;gap:20px;flex-shrink:0;}
+.cs-stats{display:flex;gap:24px;}
+.cs-stat{text-align:right;}
+.cs-stat-n{font-family:var(--serif);font-size:28px;color:var(--green);}
+.cs-stat-l{font-size:11px;color:var(--muted);}
+.cs-arrow{width:36px;height:36px;border:1.5px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all 0.3s;flex-shrink:0;}
+.cs-toggle.open .cs-arrow{transform:rotate(45deg);border-color:var(--green);color:var(--green);}
+
+.cs-body{display:none;background:var(--card);border:1px solid var(--green);border-top:none;border-radius:0 0 14px 14px;overflow:hidden;}
+.cs-body.open{display:block;}
+.cs-inner{padding:0 36px 36px;}
+
+/* Process timeline inside case study */
+.process-flow{display:flex;gap:0;margin:28px 0;overflow-x:auto;padding-bottom:8px;}
+.pf-step{flex:1;min-width:140px;padding:18px 20px;position:relative;}
+.pf-step::after{content:'→';position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:var(--border);font-size:18px;}
+.pf-step:last-child::after{display:none;}
+.pf-step-n{font-family:var(--mono);font-size:10px;color:var(--green);margin-bottom:6px;letter-spacing:0.08em;}
+.pf-step-label{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+.pf-step-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* Mini evaluation table inside case study */
+.mini-table{width:100%;border-collapse:collapse;font-size:13px;margin:20px 0;}
+.mini-table th{background:var(--cream);padding:10px 14px;text-align:left;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);}
+.mini-table td{padding:12px 14px;border-bottom:1px solid var(--cream);vertical-align:top;line-height:1.5;}
+.mini-table tr:last-child td{border-bottom:none;}
+.mini-table tr:hover td{background:var(--surface);}
+.verdict-chip{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;}
+
+/* Findings grid */
+.findings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0;}
+.finding-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;}
+.finding-n{font-family:var(--serif);font-size:32px;color:var(--green);margin-bottom:4px;}
+.finding-l{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* Q&A sample inside case study 2 */
+.qa-sample{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin:12px 0;}
+.qa-q{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:10px;}
+.qa-a{font-size:13px;color:var(--muted);line-height:1.7;}
+.qa-tags{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;}
+.qa-tag{font-size:10px;padding:2px 8px;border-radius:100px;background:var(--green-light);color:var(--green);border:1px solid rgba(26,107,60,0.2);}
+
+/* ============ RLHF WORKFLOW ============ */
+.rlhf-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;}
+.workflow-steps{display:flex;flex-direction:column;gap:0;}
+.ws{display:flex;gap:20px;padding:24px 0;border-bottom:1px solid var(--border);position:relative;}
+.ws:last-child{border-bottom:none;}
+.ws-num{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--green);flex-shrink:0;width:28px;}
+.ws-content{}
+.ws-title{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+.ws-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+.ws-example{font-family:var(--mono);font-size:12px;background:var(--cream);border:1px solid var(--border);border-radius:6px;padding:10px 14px;margin-top:10px;color:var(--text);line-height:1.5;}
+
+.rlhf-results{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;position:sticky;top:100px;}
+.rr-title{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+.rr-sub{font-size:13px;color:var(--muted);margin-bottom:24px;}
+.donut-wrap{display:flex;align-items:center;gap:28px;margin-bottom:24px;}
+.donut{position:relative;width:120px;height:120px;flex-shrink:0;}
+.donut svg{transform:rotate(-90deg);}
+.donut-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+.donut-label-n{font-family:var(--serif);font-size:28px;color:var(--ink);}
+.donut-label-t{font-size:10px;color:var(--muted);}
+.donut-legend{flex:1;}
+.dl-item{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px;}
+.dl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.dl-label{color:var(--muted);}
+.dl-val{font-weight:600;color:var(--ink);margin-left:auto;}
+.error-list{display:flex;flex-direction:column;gap:8px;}
+.err-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface);border-radius:8px;border:1px solid var(--border);}
+.err-type{font-size:12px;font-weight:600;color:var(--ink);}
+.err-count{font-size:12px;color:var(--muted);font-family:var(--mono);}
+
+/* ============ CERTS GRID ============ */
+.certs-masonry{columns:3;gap:20px;}
+.cert-card{break-inside:avoid;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:20px;transition:all 0.2s;}
+.cert-card:hover{border-color:var(--green);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.07);}
+.cert-cat{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:3px 10px;border-radius:100px;display:inline-block;margin-bottom:12px;}
+.cat-ai{background:#e8f4fd;color:#1565c0;}
+.cat-bio{background:var(--green-light);color:var(--green);}
+.cat-health{background:#fce4ec;color:#880e4f;}
+.cat-edu{background:var(--amber-light);color:#8a6500;}
+.cert-name{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px;line-height:1.4;}
+.cert-org{font-size:12px;color:var(--muted);}
+.cert-yr{font-size:11px;font-family:var(--mono);color:var(--green);margin-top:8px;}
+
+/* ============ EDUCATION TIMELINE ============ */
+.edu-timeline{position:relative;padding-left:28px;}
+.edu-timeline::before{content:'';position:absolute;left:0;top:8px;bottom:0;width:1px;background:linear-gradient(to bottom,var(--green),transparent);}
+.edu-item{position:relative;padding-bottom:44px;}
+.edu-item:last-child{padding-bottom:0;}
+.edu-dot{position:absolute;left:-33px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--green);border:2px solid var(--paper);box-shadow:0 0 0 3px rgba(26,107,60,0.2);}
+.edu-year{font-family:var(--mono);font-size:12px;color:var(--green);margin-bottom:6px;}
+.edu-deg{font-size:18px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.edu-org{font-size:14px;color:var(--muted);margin-bottom:8px;}
+.edu-detail{font-size:13px;color:var(--muted);opacity:0.8;}
+.edu-now{display:inline-block;font-size:11px;font-weight:600;background:var(--green);color:white;padding:2px 10px;border-radius:100px;margin-left:8px;vertical-align:middle;}
+
+/* ============ CONTACT ============ */
+.contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.contact-left h2{margin-bottom:16px;}
+.contact-left p{font-size:16px;color:var(--muted);line-height:1.75;margin-bottom:36px;}
+.contact-chips{display:flex;flex-direction:column;gap:12px;}
+.contact-chip{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--border);padding:16px 22px;border-radius:12px;text-decoration:none;color:var(--text);transition:all 0.2s;}
+.contact-chip:hover{border-color:var(--green);transform:translateX(6px);}
+.chip-icon{width:36px;height:36px;background:var(--green-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.chip-label{font-size:11px;color:var(--muted);margin-bottom:2px;}
+.chip-val{font-size:14px;font-weight:600;color:var(--ink);}
+.contact-right{background:var(--ink);border-radius:20px;padding:44px;color:var(--paper);}
+.cr-title{font-family:var(--serif);font-size:28px;margin-bottom:20px;font-weight:400;}
+.cr-item{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px;}
+.cr-bullet{width:6px;height:6px;border-radius:50%;background:var(--green-mid);flex-shrink:0;margin-top:7px;}
+.cr-text{font-size:14px;color:rgba(245,242,235,0.75);line-height:1.6;}
+.cr-text strong{color:var(--green-mid);}
+
+footer{background:var(--ink);color:rgba(245,242,235,0.4);text-align:center;padding:28px;font-size:12px;letter-spacing:0.06em;}
+
+/* ============ SCROLL REVEAL ============ */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-delay-1{transition-delay:0.1s;}
+.reveal-delay-2{transition-delay:0.2s;}
+.reveal-delay-3{transition-delay:0.3s;}
+
+@media(max-width:900px){
+  nav{padding:16px 20px;}
+  .nav-links{display:none;}
+  .hero{grid-template-columns:1fr;padding:100px 20px 60px;gap:40px;}
+  .hero-right{display:none;}
+  .section{padding:72px 20px;}
+  .proof-grid{grid-template-columns:1fr;}
+  .rlhf-grid{grid-template-columns:1fr;}
+  .contact-wrap{grid-template-columns:1fr;}
+  .certs-masonry{columns:1;}
+  .findings-grid{grid-template-columns:1fr 1fr;}
+  .cs-stats{display:none;}
+  .ticker-item{padding:0 20px;}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo">Yash Sahu</div>
+  <ul class="nav-links">
+    <li><a href="#proof">Proof of Work</a></li>
+    <li><a href="#projects">Case Studies</a></li>
+    <li><a href="#rlhf">RLHF</a></li>
+    <li><a href="#certs">Credentials</a></li>
+  </ul>
+  <a href="mailto:y3318105@gmail.com" class="nav-cta">Hire Me</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">
+      <div class="eyebrow-dot"></div>
+      <div class="eyebrow-text">Biology SME · AI Evaluator · RLHF Annotator</div>
+    </div>
+    <h1>Yash<br><em>Sahu</em></h1>
+    <p class="hero-desc">I evaluate AI-generated biology content, catch conceptual errors, and build training datasets — combining 4 years of Zoology Honours with hands-on RLHF annotation skills.</p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn-dark">View Case Studies ↓</a>
+      <a href="https://academia.edu/165214819/Yash_Sahu_ResearchPaper_BilawaliLake_FINAL" target="_blank" class="btn-out">Published Research →</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-card-stack">
+      <div class="hc hc-1">
+        <div class="hc-label">Evaluation · Q3 · Cell Biology</div>
+        <span class="hc-verdict v-error">✗ Incorrect</span>
+        <div class="hc-q">"What does smooth ER do?"</div>
+        <div class="hc-err">Error type: Conceptual confusion<br>AI described rough ER functions</div>
+      </div>
+      <div class="hc hc-2">
+        <div class="hc-label">Evaluation · Q4 · Ecology</div>
+        <span class="hc-verdict v-correct">✓ Correct</span>
+        <div class="hc-q">"What is eutrophication?"</div>
+        <div class="hc-err">Reasoning: Sound ✓<br>Evidence: Field-validated ✓</div>
+      </div>
+      <div class="hc hc-3">
+        <div class="hc-label">Evaluation · Q8 · Genetics</div>
+        <span class="hc-verdict v-partial">~ Partial</span>
+        <div class="hc-q">"Frameshift vs point mutation?"</div>
+        <div class="hc-err">Missing: triplet exception rule</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-item">Molecular Biology <span>✦</span></span>
+    <span class="ticker-item">Genetics <span>✦</span></span>
+    <span class="ticker-item">Cell Biology <span>✦</span></span>
+    <span class="ticker-item">Ecology <span>✦</span></span>
+    <span class="ticker-item">Biochemistry <span>✦</span></span>
+    <span class="ticker-item">RLHF Annotation <span>✦</span></span>
+    <span class="ticker-item">AI Evaluation <span>✦</span></span>
+    <span class="ticker-item">Data Labelling <span>✦</span></span>
+    <span class="ticker-item">Scientific Writing <span>✦</span></span>
+    <span class="ticker-item">Molecular Biology <span>✦</span></span>
+    <span class="ticker-item">Genetics <span>✦</span></span>
+    <span class="ticker-item">Cell Biology <span>✦</span></span>
+    <span class="ticker-item">Ecology <span>✦</span></span>
+    <span class="ticker-item">Biochemistry <span>✦</span></span>
+    <span class="ticker-item">RLHF Annotation <span>✦</span></span>
+    <span class="ticker-item">AI Evaluation <span>✦</span></span>
+    <span class="ticker-item">Data Labelling <span>✦</span></span>
+    <span class="ticker-item">Scientific Writing <span>✦</span></span>
+  </div>
+</div>
+
+<!-- PROOF OF WORK -->
+<div id="proof">
+<div class="section">
+  <div class="sec-header reveal">
+    <div>
+      <div class="sec-label">Not Claims — Proof</div>
+      <h2>What I Can <em>Actually</em> Do</h2>
+    </div>
+    <p class="sec-note">Every skill below is backed by a real project or documented evidence — click case studies to see the work.</p>
+  </div>
+  <div class="proof-grid reveal">
+    <div class="proof-item">
+      <div class="proof-num">01 / Validation</div>
+      <div class="proof-title">Validate Biological Reasoning</div>
+      <div class="proof-body">Evaluated 10 AI responses across 5 biology domains — assessed factual accuracy, mechanistic correctness, and scientific logic for each.</div>
+      <div class="proof-badge"><span class="proof-badge-icon">✓</span> 5 correct · 1 partial · 4 errors caught</div>
+      <a href="#projects" class="proof-link">See evaluation case study →</a>
+    </div>
+    <div class="proof-item">
+      <div class="proof-num">02 / Annotation</div>
+      <div class="proof-title">Annotate Conceptual Errors</div>
+      <div class="proof-body">Classified each error by type — Factual Error, Conceptual Confusion, Incomplete Reasoning, Multiple Errors — with structured corrective feedback.</div>
+      <div class="proof-badge"><span class="proof-badge-icon">🔍</span> 4 error types · 4 errors classified</div>
+      <a href="sme_evaluation_report.html" class="proof-link">View annotated errors →</a>
+    </div>
+    <div class="proof-item">
+      <div class="proof-num">03 / Dataset Creation</div>
+      <div class="proof-title">Create Training Data</div>
+      <div class="proof-body">Authored 10 biology Q&A pairs with gold-standard answers, domain tags, difficulty ratings, and topic keywords — AI-training ready format.</div>
+      <div class="proof-badge"><span class="proof-badge-icon">🏷️</span> 10 pairs · 5 domains · 3 difficulty levels</div>
+      <a href="biology_qa_dataset.html" class="proof-link">View Q&A dataset →</a>
+    </div>
+    <div class="proof-item">
+      <div class="proof-num">04 / Scientific Writing</div>
+      <div class="proof-title">Gold-Standard Explanations</div>
+      <div class="proof-body">Published field research with structured, parameter-by-parameter scientific documentation validated against international standards (BIS/WHO).</div>
+      <div class="proof-badge"><span class="proof-badge-icon">📄</span> Published · Academia.edu · 2026</div>
+      <a href="https://academia.edu/165214819/Yash_Sahu_ResearchPaper_BilawaliLake_FINAL" target="_blank" class="proof-link">Read published paper →</a>
+    </div>
+    <div class="proof-item">
+      <div class="proof-num">05 / Pathway Interpretation</div>
+      <div class="proof-title">Interpret Diagrams & Pathways</div>
+      <div class="proof-body">4-year Honours training across metabolic pathways, genetic maps, physiological diagrams. Correctly assessed AI's explanation of the intrinsic apoptotic pathway (Q7).</div>
+      <div class="proof-badge"><span class="proof-badge-icon">🗺️</span> Zoology + Biotechnology + Chemistry</div>
+      <a href="sme_evaluation_report.html" class="proof-link">See pathway evaluation →</a>
+    </div>
+    <div class="proof-item">
+      <div class="proof-num">06 / RLHF Pipeline</div>
+      <div class="proof-title">Understands Full AI Pipeline</div>
+      <div class="proof-body">RLHF certified (DeepLearning.AI). Understands human feedback collection, preference ranking, reward model training, and evaluation workflows — not just annotation.</div>
+      <div class="proof-badge"><span class="proof-badge-icon">🤖</span> RLHF · NLP · Prompt Engineering · AI Fluency</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- CASE STUDIES -->
+<div id="projects" class="section-alt">
+<div class="section">
+  <div class="sec-header reveal">
+    <div>
+      <div class="sec-label">Case Studies</div>
+      <h2>The Work,<br><em>In Detail</em></h2>
+    </div>
+    <p class="sec-note">Click each project to expand the full process — problem, approach, findings, and outputs.</p>
+  </div>
+
+  <!-- PROJECT 1 -->
+  <div class="case-study reveal">
+    <button class="cs-toggle" onclick="toggleCS(this)">
+      <div class="cs-left">
+        <div class="cs-num">01</div>
+        <div class="cs-info">
+          <div class="cs-tag">AI Evaluation · RLHF Demonstration</div>
+          <div class="cs-title">Biology AI Response Evaluation — 10 Questions, 5 Domains</div>
+          <div class="cs-pills"><span class="cs-pill">Molecular Biology</span><span class="cs-pill">Genetics</span><span class="cs-pill">Cell Biology</span><span class="cs-pill">Ecology</span><span class="cs-pill">Biochemistry</span></div>
+        </div>
+      </div>
+      <div class="cs-right">
+        <div class="cs-stats">
+          <div class="cs-stat"><div class="cs-stat-n">10</div><div class="cs-stat-l">Evaluated</div></div>
+          <div class="cs-stat"><div class="cs-stat-n">4</div><div class="cs-stat-l">Errors Found</div></div>
+        </div>
+        <div class="cs-arrow">+</div>
+      </div>
+    </button>
+    <div class="cs-body">
+      <div class="cs-inner">
+        <div class="process-flow">
+          <div class="pf-step"><div class="pf-step-n">Step 01</div><div class="pf-step-label">Question design</div><div class="pf-step-desc">10 UG-level questions across 5 domains selected to test common AI failure points</div></div>
+          <div class="pf-step"><div class="pf-step-n">Step 02</div><div class="pf-step-label">AI response collection</div><div class="pf-step-desc">Responses generated — some with deliberate errors typical of LLM biology mistakes</div></div>
+          <div class="pf-step"><div class="pf-step-n">Step 03</div><div class="pf-step-label">SME evaluation</div><div class="pf-step-desc">Each response assessed against known biology: accuracy, reasoning, completeness</div></div>
+          <div class="pf-step"><div class="pf-step-n">Step 04</div><div class="pf-step-label">Error classification</div><div class="pf-step-desc">Errors typed and structured SME feedback written — mirrors real annotation format</div></div>
+        </div>
+
+        <div class="findings-grid">
+          <div class="finding-card"><div class="finding-n">5</div><div class="finding-l">Responses fully correct — confirmed with detailed reasoning</div></div>
+          <div class="finding-card"><div class="finding-n">1</div><div class="finding-l">Partial — correct core, missing critical nuance (frameshift exception)</div></div>
+          <div class="finding-card"><div class="finding-n">4</div><div class="finding-l">Incorrect — caught errors that could corrupt AI biology training data</div></div>
+        </div>
+
+        <div style="font-size:13px;font-weight:600;color:var(--ink);margin:20px 0 12px;letter-spacing:0.04em;">Sample evaluations:</div>
+        <table class="mini-table">
+          <thead><tr><th>Q</th><th>Domain</th><th>AI Error</th><th>Verdict</th><th>My Correction</th></tr></thead>
+          <tbody>
+            <tr><td style="font-family:var(--mono);font-size:11px;">Q3</td><td>Cell Biology</td><td>Described rough ER functions for smooth ER</td><td><span class="verdict-chip v-error">Incorrect</span></td><td style="font-size:12px;color:var(--muted);">SER: lipid synthesis, steroid hormones, detoxification, Ca²⁺ storage — no ribosomes</td></tr>
+            <tr><td style="font-family:var(--mono);font-size:11px;">Q6</td><td>Mol. Biology</td><td>Called Shine-Dalgarno eukaryotic; called it a promoter</td><td><span class="verdict-chip v-error">Incorrect</span></td><td style="font-size:12px;color:var(--muted);">Prokaryotic RBS on mRNA; eukaryotes use Kozak sequence; facilitates translation not transcription</td></tr>
+            <tr><td style="font-family:var(--mono);font-size:11px;">Q8</td><td>Genetics</td><td>Missed triplet insertion/deletion exception</td><td><span class="verdict-chip v-partial">Partial</span></td><td style="font-size:12px;color:var(--muted);">Insertions/deletions in multiples of 3 do not shift reading frame — critical exception omitted</td></tr>
+          </tbody>
+        </table>
+        <a href="sme_evaluation_report.html" style="display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--paper);padding:12px 24px;border-radius:100px;font-size:13px;font-weight:600;text-decoration:none;margin-top:16px;">View Full Evaluation Report →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT 2 -->
+  <div class="case-study reveal" style="margin-top:4px;">
+    <button class="cs-toggle" onclick="toggleCS(this)">
+      <div class="cs-left">
+        <div class="cs-num">02</div>
+        <div class="cs-info">
+          <div class="cs-tag">Dataset Creation · AI Training Data</div>
+          <div class="cs-title">Biology Q&A Training Dataset — Gold-Standard Answers</div>
+          <div class="cs-pills"><span class="cs-pill">Data Authoring</span><span class="cs-pill">Topic Tagging</span><span class="cs-pill">Difficulty Rating</span><span class="cs-pill">Structured Format</span></div>
+        </div>
+      </div>
+      <div class="cs-right">
+        <div class="cs-stats">
+          <div class="cs-stat"><div class="cs-stat-n">10</div><div class="cs-stat-l">Q&A Pairs</div></div>
+          <div class="cs-stat"><div class="cs-stat-n">5</div><div class="cs-stat-l">Domains</div></div>
+        </div>
+        <div class="cs-arrow">+</div>
+      </div>
+    </button>
+    <div class="cs-body">
+      <div class="cs-inner">
+        <div class="process-flow">
+          <div class="pf-step"><div class="pf-step-n">Step 01</div><div class="pf-step-label">Domain selection</div><div class="pf-step-desc">5 core biology domains chosen to reflect full UG Biology SME scope</div></div>
+          <div class="pf-step"><div class="pf-step-n">Step 02</div><div class="pf-step-label">Question authoring</div><div class="pf-step-desc">Questions written at Easy/Medium/Hard levels to test different reasoning depths</div></div>
+          <div class="pf-step"><div class="pf-step-n">Step 03</div><div class="pf-step-label">Gold-standard answers</div><div class="pf-step-desc">Accurate, well-structured answers written — no AI assistance in answer content</div></div>
+          <div class="pf-step"><div class="pf-step-n">Step 04</div><div class="pf-step-label">Tagging & formatting</div><div class="pf-step-desc">Domain, difficulty, and topic keywords assigned — AI-training-pipeline-ready format</div></div>
+        </div>
+
+        <div style="font-size:13px;font-weight:600;color:var(--ink);margin:20px 0 12px;">Sample Q&A pairs:</div>
+        <div class="qa-sample">
+          <div class="qa-q">Q: What is the significance of the Na⁺/K⁺ ATPase pump and its physiological role?</div>
+          <div class="qa-a">The Na⁺/K⁺ ATPase actively transports 3 Na⁺ out and 2 K⁺ in per ATP hydrolysed, maintaining resting membrane potential (~-70mV in neurons), regulating cell volume via osmotic pressure, and creating electrochemical gradients for secondary active transport. It is electrogenic and essential for restoring ion gradients post-action potential.</div>
+          <div class="qa-tags"><span class="qa-tag">Cell Biology</span><span class="qa-tag">Hard</span><span class="qa-tag">Active Transport</span><span class="qa-tag">Membrane Potential</span><span class="qa-tag">Neurophysiology</span></div>
+        </div>
+        <div class="qa-sample">
+          <div class="qa-q">Q: What is the difference between competitive and non-competitive enzyme inhibition?</div>
+          <div class="qa-a">Competitive inhibition: inhibitor binds active site; Km↑, Vmax unchanged — overcome by excess substrate. Non-competitive: binds allosteric site; Vmax↓, Km unchanged — cannot be overcome. Example: Statins (competitive, HMG-CoA reductase); cyanide (non-competitive, cytochrome c oxidase).</div>
+          <div class="qa-tags"><span class="qa-tag">Biochemistry</span><span class="qa-tag">Medium</span><span class="qa-tag">Enzyme Kinetics</span><span class="qa-tag">Km</span><span class="qa-tag">Vmax</span></div>
+        </div>
+        <a href="biology_qa_dataset.html" style="display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--paper);padding:12px 24px;border-radius:100px;font-size:13px;font-weight:600;text-decoration:none;margin-top:16px;">View Full Dataset →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT 3 -->
+  <div class="case-study reveal" style="margin-top:4px;">
+    <button class="cs-toggle" onclick="toggleCS(this)">
+      <div class="cs-left">
+        <div class="cs-num">03</div>
+        <div class="cs-info">
+          <div class="cs-tag">Field Research · Published</div>
+          <div class="cs-title">Physicochemical & Biological Assessment of Bilawali Lake — Published Study</div>
+          <div class="cs-pills"><span class="cs-pill">Aquatic Ecology</span><span class="cs-pill">Data Collection</span><span class="cs-pill">Literature Review</span><span class="cs-pill">Scientific Writing</span></div>
+        </div>
+      </div>
+      <div class="cs-right">
+        <div class="cs-stats">
+          <div class="cs-stat"><div class="cs-stat-n">8</div><div class="cs-stat-l">Parameters</div></div>
+          <div class="cs-stat"><div class="cs-stat-n">3</div><div class="cs-stat-l">Seasons</div></div>
+        </div>
+        <div class="cs-arrow">+</div>
+      </div>
+    </button>
+    <div class="cs-body">
+      <div class="cs-inner">
+        <div class="process-flow">
+          <div class="pf-step"><div class="pf-step-n">Step 01</div><div class="pf-step-label">Literature review</div><div class="pf-step-desc">Systematic search of peer-reviewed papers to establish baseline parameters and methodology</div></div>
+          <div class="pf-step"><div class="pf-step-n">Step 02</div><div class="pf-step-label">Multi-season sampling</div><div class="pf-step-desc">Water samples collected across Summer, Monsoon, and Winter at multiple sites</div></div>
+          <div class="pf-step"><div class="pf-step-n">Step 03</div><div class="pf-step-label">Lab analysis</div><div class="pf-step-desc">Winkler titration, BOD 5-day test, phenol disulphonic acid method, stannous chloride method</div></div>
+          <div class="pf-step"><div class="pf-step-n">Step 04</div><div class="pf-step-label">Validation & writing</div><div class="pf-step-desc">Data validated vs BIS/WHO standards; structured scientific explanations written for each parameter</div></div>
+        </div>
+        <div class="findings-grid">
+          <div class="finding-card"><div class="finding-n">8</div><div class="finding-l">Parameters: pH, DO, Turbidity, TDS, BOD, Nitrates, Phosphates, Temperature</div></div>
+          <div class="finding-card"><div class="finding-n">3</div><div class="finding-l">Seasons of data collection — Summer, Monsoon, Winter</div></div>
+          <div class="finding-card"><div class="finding-n">1+</div><div class="finding-l">Year of field work with biodiversity assessment (fish, cyanobacteria, macroinvertebrates)</div></div>
+        </div>
+        <a href="https://academia.edu/165214819/Yash_Sahu_ResearchPaper_BilawaliLake_FINAL" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--paper);padding:12px 24px;border-radius:100px;font-size:13px;font-weight:600;text-decoration:none;margin-top:16px;">Read Published Paper →</a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- RLHF WORKFLOW -->
+<div id="rlhf">
+<div class="section">
+  <div class="sec-header reveal">
+    <div>
+      <div class="sec-label">RLHF Demonstration</div>
+      <h2>How I Work as an<br><em>AI Evaluator</em></h2>
+    </div>
+    <p class="sec-note">This is the exact workflow I followed in Project 1 — mapped to real RLHF pipeline stages.</p>
+  </div>
+  <div class="rlhf-grid reveal">
+    <div class="workflow-steps">
+      <div class="ws">
+        <div class="ws-num">01</div>
+        <div class="ws-content">
+          <div class="ws-title">Read question + AI response</div>
+          <div class="ws-desc">Understand what the question is actually asking, then read the AI response without bias — treating it like a student answer to be graded.</div>
+          <div class="ws-example">Input: "What is the function of smooth ER?"<br>AI Answer: "Smooth ER is responsible for protein synthesis..."</div>
+        </div>
+      </div>
+      <div class="ws">
+        <div class="ws-num">02</div>
+        <div class="ws-content">
+          <div class="ws-title">Assess accuracy against domain knowledge</div>
+          <div class="ws-desc">Cross-check each factual claim against known biology. Identify specific incorrect statements, missing nuance, or confused terminology.</div>
+          <div class="ws-example">Flag: SER has no ribosomes → cannot do protein synthesis<br>This is rough ER function → conceptual confusion</div>
+        </div>
+      </div>
+      <div class="ws">
+        <div class="ws-num">03</div>
+        <div class="ws-content">
+          <div class="ws-title">Classify verdict + error type</div>
+          <div class="ws-desc">Assign Correct / Partial / Incorrect verdict. Classify error type: Factual Error, Conceptual Confusion, Incomplete Reasoning, or Multiple Errors.</div>
+          <div class="ws-example">Verdict: Incorrect<br>Error type: Conceptual confusion (SER ↔ RER)</div>
+        </div>
+      </div>
+      <div class="ws">
+        <div class="ws-num">04</div>
+        <div class="ws-content">
+          <div class="ws-title">Write structured SME feedback</div>
+          <div class="ws-desc">Provide corrective explanation — precise, scientifically accurate, formatted for use in AI training data pipelines.</div>
+          <div class="ws-example">Feedback: "SER lacks ribosomes — not involved in protein synthesis. Actual functions: lipid synthesis, steroid hormone production, drug detoxification (liver), Ca²⁺ storage (muscle)."</div>
+        </div>
+      </div>
+    </div>
+    <div class="rlhf-results">
+      <div class="rr-title">Project 1 Results</div>
+      <div class="rr-sub">10 biology AI responses evaluated</div>
+      <div class="donut-wrap">
+        <div class="donut">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" fill="none" stroke="#e8e2d5" stroke-width="14"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="#4caf76" stroke-width="14" stroke-dasharray="150.8 301.6" stroke-linecap="round"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="#f0a500" stroke-width="14" stroke-dasharray="30.2 422.2" stroke-dashoffset="-150.8" stroke-linecap="round"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="#e74c3c" stroke-width="14" stroke-dasharray="120.6 331.8" stroke-dashoffset="-181" stroke-linecap="round"/>
+          </svg>
+          <div class="donut-label"><div class="donut-label-n">10</div><div class="donut-label-t">total</div></div>
+        </div>
+        <div class="donut-legend">
+          <div class="dl-item"><div class="dl-dot" style="background:#4caf76"></div><div class="dl-label">Correct</div><div class="dl-val">5</div></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#f0a500"></div><div class="dl-label">Partial</div><div class="dl-val">1</div></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#e74c3c"></div><div class="dl-label">Incorrect</div><div class="dl-val">4</div></div>
+        </div>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;">Error types caught</div>
+      <div class="error-list">
+        <div class="err-row"><span class="err-type">Factual Error</span><span class="err-count">1 instance</span></div>
+        <div class="err-row"><span class="err-type">Conceptual Confusion</span><span class="err-count">1 instance</span></div>
+        <div class="err-row"><span class="err-type">Multiple Errors</span><span class="err-count">1 instance</span></div>
+        <div class="err-row"><span class="err-type">Incomplete Reasoning</span><span class="err-count">1 instance</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- CREDENTIALS -->
+<div id="certs" class="section-alt">
+<div class="section">
+  <div class="sec-header reveal">
+    <div>
+      <div class="sec-label">Education & Credentials</div>
+      <h2>Background &<br><em>Certifications</em></h2>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-bottom:64px;" class="reveal">
+    <div>
+      <div class="sec-label" style="margin-bottom:24px;">Education</div>
+      <div class="edu-timeline">
+        <div class="edu-item">
+          <div class="edu-dot"></div>
+          <div class="edu-year">2025 – Present</div>
+          <div class="edu-deg">M.Sc. Zoology <span class="edu-now">Ongoing</span></div>
+          <div class="edu-org">IGNOU — Indira Gandhi National Open University</div>
+        </div>
+        <div class="edu-item">
+          <div class="edu-dot"></div>
+          <div class="edu-year">2021 – 2025 · 4 years</div>
+          <div class="edu-deg">B.Sc. Zoology Honours + Research</div>
+          <div class="edu-org">Govt. Holkar Science College, DAVV — Indore</div>
+          <div class="edu-detail">Major: Zoology Honours · Minors: Biotechnology, Chemistry · CGPA 7.4</div>
+        </div>
+        <div class="edu-item">
+          <div class="edu-dot"></div>
+          <div class="edu-year">2022</div>
+          <div class="edu-deg">12th Standard — Science</div>
+          <div class="edu-org">State Board MP · 81%</div>
+        </div>
+        <div class="edu-item">
+          <div class="edu-dot"></div>
+          <div class="edu-year">2020</div>
+          <div class="edu-deg">10th Standard — CBSE</div>
+          <div class="edu-org">93%</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="sec-label" style="margin-bottom:24px;">Volunteer</div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;">
+        <div style="font-size:18px;font-weight:600;color:var(--ink);margin-bottom:8px;">Robinhood Academy, Indore</div>
+        <div style="font-size:14px;color:var(--green);font-weight:600;margin-bottom:12px;">Volunteer Educator · Ongoing</div>
+        <div style="font-size:14px;color:var(--muted);line-height:1.7;">Teaching underprivileged students — science communication, community development, accessible education. Reflects the AI for Good values that drive my SME work.</div>
+      </div>
+      <div style="margin-top:20px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;">
+        <div style="font-size:18px;font-weight:600;color:var(--ink);margin-bottom:8px;">Published Research</div>
+        <div style="font-size:14px;color:var(--green);font-weight:600;margin-bottom:12px;">Academia.edu · March 2026</div>
+        <div style="font-size:14px;color:var(--muted);line-height:1.7;">Bilawali Lake ecological study — multi-season, multi-site, BIS/WHO validated. Demonstrates gold-standard scientific writing at publication level.</div>
+        <a href="https://academia.edu/165214819/Yash_Sahu_ResearchPaper_BilawaliLake_FINAL" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--green);text-decoration:none;margin-top:12px;border-bottom:1.5px solid transparent;padding-bottom:1px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='#1a6b3c'" onmouseout="this.style.borderColor='transparent'">Read paper →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="sec-label" style="margin-bottom:28px;">15+ Certifications</div>
+    <div class="certs-masonry">
+      <div class="cert-card"><span class="cert-cat cat-ai">AI & ML</span><div class="cert-name">Reinforcement Learning from Human Feedback (RLHF)</div><div class="cert-org">DeepLearning.AI</div><div class="cert-yr">2026</div></div>
+      <div class="cert-card"><span class="cert-cat cat-health">Public Health</span><div class="cert-name">Good Clinical Practice (GCP)</div><div class="cert-org">National Institutes of Health (NIH)</div><div class="cert-yr">2026</div></div>
+      <div class="cert-card"><span class="cert-cat cat-ai">AI & ML</span><div class="cert-name">Elements of AI</div><div class="cert-org">University of Helsinki</div><div class="cert-yr">2026</div></div>
+      <div class="cert-card"><span class="cert-cat cat-health">Public Health</span><div class="cert-name">Public Health Essentials</div><div class="cert-org">World Health Organization (WHO)</div><div class="cert-yr">2026</div></div>
+      <div class="cert-card"><span class="cert-cat cat-ai">AI & ML</span><div class="cert-name">Prompt Engineering for Developers</div><div class="cert-org">DeepLearning.AI / Coursera</div><div class="cert-yr">2026</div></div>
+      <div class="cert-card"><span class="cert-cat cat-health">Research</span><div class="cert-name">Systematic Review & Meta-Analysis</div><div class="cert-org">Coursera</div><div class="cert-yr">2026</div></div>
+      <div class="cert-card"><span class="cert-cat cat-ai">AI & ML</span><div class="cert-name">Natural Language Processing (NLP)</div><div class="cert-org">Kaggle</div><div class="cert-yr">2026</div></div>
+      <div class="cert-card"><span class="cert-cat cat-health">Research</span><div class="cert-name">Medical Writing</div><div class="cert-org">Coursera</div><div class="cert-yr">2026</div></div>
+      <div class="cert-card"><span class="cert-cat cat-ai">AI & ML</span><div class="cert-name">AI Fluency for Educators</div><div class="cert-org">Anthropic</div><div class="cert-yr">2026</div></div>
+      <div class="cert-card"><span class="cert-cat cat-ai">AI & ML</span><div class="cert-name">Introduction to Game AI & Reinforcement Learning</div><div class="cert-org">Coursera</div><div class="cert-yr">2026</div></div>
+      <div class="cert-card"><span class="cert-cat cat-edu">Education</span><div class="cert-name">Instructional Design & Curriculum Development</div><div class="cert-org">Association for Talent Development (ATD)</div><div class="cert-yr">2026</div></div>
+      <div class="cert-card"><span class="cert-cat cat-ai">AI & ML</span><div class="cert-name">Teaching the AI Fluency Framework</div><div class="cert-org">Anthropic</div><div class="cert-yr">2026</div></div>
+      <div class="cert-card"><span class="cert-cat cat-edu">Education</span><div class="cert-name">Instructional Design Foundations</div><div class="cert-org">University of Illinois / Coursera</div><div class="cert-yr">2026</div></div>
+      <div class="cert-card"><span class="cert-cat cat-bio">Bioinformatics</span><div class="cert-name">Bioinformatics</div><div class="cert-org">NPTEL — Enrolled</div><div class="cert-yr">2026</div></div>
+      <div class="cert-card"><span class="cert-cat cat-ai">AI & ML</span><div class="cert-name">AI for Everyone</div><div class="cert-org">DeepLearning.AI / Coursera</div><div class="cert-yr">2026</div></div>
+      <div class="cert-card"><span class="cert-cat cat-ai">AI & ML</span><div class="cert-name">Introduction to Prompt Engineering</div><div class="cert-org">University of Helsinki</div><div class="cert-yr">2026</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- CONTACT -->
+<div class="section reveal">
+  <div class="contact-wrap">
+    <div class="contact-left">
+      <div class="sec-label">Contact</div>
+      <h2>Let's Work<br><em>Together</em></h2>
+      <p>Open to Biology SME, AI Annotation, RLHF Evaluator, and AI Training Data roles. Based in Indore — available for remote work globally.</p>
+      <div class="contact-chips">
+        <a href="mailto:y3318105@gmail.com" class="contact-chip">
+          <div class="chip-icon">✉</div>
+          <div><div class="chip-label">Email</div><div class="chip-val">y3318105@gmail.com</div></div>
+        </a>
+        <a href="tel:+917400577948" class="contact-chip">
+          <div class="chip-icon">📞</div>
+          <div><div class="chip-label">Phone</div><div class="chip-val">+91 7400577948</div></div>
+        </a>
+        <a href="https://www.linkedin.com/in/yash-sahu-5010643ab" target="_blank" class="contact-chip">
+          <div class="chip-icon">🔗</div>
+          <div><div class="chip-label">LinkedIn</div><div class="chip-val">yash-sahu-5010643ab</div></div>
+        </a>
+        <a href="https://academia.edu/165214819/Yash_Sahu_ResearchPaper_BilawaliLake_FINAL" target="_blank" class="contact-chip">
+          <div class="chip-icon">📄</div>
+          <div><div class="chip-label">Published Research</div><div class="chip-val">Academia.edu</div></div>
+        </a>
+      </div>
+    </div>
+    <div class="contact-right">
+      <div class="cr-title">Why hire me<br>as your Biology SME?</div>
+      <div class="cr-item"><div class="cr-bullet"></div><div class="cr-text"><strong>Real proof of work</strong> — not just claims. Two completed projects demonstrating evaluation and dataset creation skills.</div></div>
+      <div class="cr-item"><div class="cr-bullet"></div><div class="cr-text"><strong>4-year Zoology Honours</strong> (not 3) — deep domain coverage across Molecular Biology, Cell Biology, Genetics, Ecology, Biochemistry.</div></div>
+      <div class="cr-item"><div class="cr-bullet"></div><div class="cr-text"><strong>RLHF certified</strong> — understands the full human feedback pipeline, not just annotation mechanics.</div></div>
+      <div class="cr-item"><div class="cr-bullet"></div><div class="cr-text"><strong>Published researcher</strong> — demonstrates gold-standard scientific writing validated against international standards.</div></div>
+      <div class="cr-item"><div class="cr-bullet"></div><div class="cr-text"><strong>15+ certifications</strong> — AI/ML, public health, instructional design, and bioinformatics.</div></div>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 Yash Sahu · Biology SME & AI Evaluator · Indore, Madhya Pradesh · github.com/YAH00024/yash-sahu-biology-sme</footer>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx-5+'px';cursor.style.top=my-5+'px';});
+function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx-18+'px';ring.style.top=ry-18+'px';requestAnimationFrame(animRing);}
+animRing();
+document.querySelectorAll('a,button,.cs-toggle').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.transform='scale(2)';ring.style.transform='scale(1.5)';ring.style.borderColor='#1a6b3c';});
+  el.addEventListener('mouseleave',()=>{cursor.style.transform='scale(1)';ring.style.transform='scale(1)';ring.style.borderColor='#1a6b3c';});
+});
+
+// Nav scroll
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{nav.classList.toggle('scrolled',window.scrollY>60);});
+
+// Case study toggle
+function toggleCS(btn){
+  const body=btn.nextElementSibling;
+  const isOpen=btn.classList.contains('open');
+  document.querySelectorAll('.cs-toggle').forEach(b=>{b.classList.remove('open');b.nextElementSibling.classList.remove('open');});
+  if(!isOpen){btn.classList.add('open');body.classList.add('open');}
+}
+
+// Scroll reveal
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>{e.target.classList.add('visible');},i*60);obs.unobserve(e.target);}});
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

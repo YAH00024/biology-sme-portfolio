@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biology SME Evaluation Report — Yash Sahu</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f0d; --surface: #111a15; --card: #162019; --border: #1f3025;
+    --green: #4ade80; --green-dim: #2d6e47; --green-glow: rgba(74,222,128,0.10);
+    --text: #e8f5ec; --muted: #7a9e85; --accent: #a3e4b5;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-weight:300; }
+
+  .hero { padding: 72px 60px 48px; max-width:1100px; margin:0 auto; }
+  .tag { display:inline-flex; align-items:center; gap:8px; background:var(--green-glow); border:1px solid var(--green-dim); border-radius:100px; padding:6px 16px; font-size:11px; letter-spacing:0.12em; color:var(--green); text-transform:uppercase; margin-bottom:24px; }
+  .tag::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse 2s ease infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+  h1 { font-family:'DM Serif Display',serif; font-size:clamp(36px,5vw,64px); line-height:1.1; margin-bottom:16px; }
+  h1 em { font-style:italic; color:var(--green); }
+  .subtitle { font-size:15px; color:var(--muted); line-height:1.8; max-width:680px; margin-bottom:32px; }
+
+  .meta-bar { background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:24px 60px; display:flex; gap:40px; flex-wrap:wrap; }
+  .meta-item { font-size:13px; color:var(--muted); }
+  .meta-item strong { color:var(--accent); display:block; font-size:15px; font-weight:500; }
+
+  .section { max-width:1100px; margin:0 auto; padding:60px; }
+
+  .summary-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:40px; }
+  .stat-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:24px; text-align:center; }
+  .stat-num { font-family:'DM Serif Display',serif; font-size:40px; color:var(--green); }
+  .stat-label { font-size:12px; color:var(--muted); margin-top:6px; text-transform:uppercase; letter-spacing:0.08em; }
+
+  .filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; }
+  .fbtn { font-size:12px; padding:6px 16px; border-radius:100px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.2s; }
+  .fbtn.active, .fbtn:hover { background:var(--green-glow); border-color:var(--green-dim); color:var(--green); }
+
+  .table-wrap { overflow-x:auto; border-radius:12px; border:1px solid var(--border); }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { background:var(--surface); color:var(--muted); font-weight:500; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; padding:14px 16px; text-align:left; border-bottom:1px solid var(--border); }
+  td { padding:16px; vertical-align:top; border-bottom:1px solid var(--border); line-height:1.6; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:rgba(74,222,128,0.03); }
+
+  .q-num { font-weight:500; color:var(--green); font-size:13px; }
+  .domain-badge { display:inline-block; font-size:11px; padding:3px 10px; border-radius:100px; margin-top:6px; }
+  .badge-mol { background:rgba(130,100,255,0.15); color:#b39dff; }
+  .badge-cell { background:rgba(56,150,255,0.12); color:#7ec0ff; }
+  .badge-eco { background:rgba(74,222,128,0.12); color:#6ee7a0; }
+  .badge-bio { background:rgba(255,180,50,0.12); color:#ffd080; }
+  .badge-gen { background:rgba(255,100,160,0.12); color:#ffaad4; }
+
+  .verdict { display:inline-block; font-size:11px; font-weight:500; padding:4px 12px; border-radius:100px; }
+  .v-yes { background:rgba(74,222,128,0.15); color:#4ade80; }
+  .v-no { background:rgba(255,80,80,0.15); color:#ff8080; }
+  .v-partial { background:rgba(255,180,50,0.15); color:#ffd080; }
+
+  .error-tag { display:inline-block; font-size:11px; padding:3px 10px; border-radius:6px; background:rgba(255,255,255,0.05); color:var(--muted); }
+  .ai-ans { font-size:12px; color:var(--muted); line-height:1.7; }
+  .feedback { font-size:12px; color:var(--accent); line-height:1.7; }
+
+  .report-box { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:32px; margin-top:40px; }
+  .report-box h2 { font-family:'DM Serif Display',serif; font-size:24px; margin-bottom:16px; }
+  .report-box p { font-size:14px; color:var(--muted); line-height:1.8; margin-bottom:12px; }
+  .report-box ul { padding-left:20px; }
+  .report-box li { font-size:14px; color:var(--muted); line-height:1.8; margin-bottom:6px; }
+  .report-box li strong { color:var(--accent); font-weight:500; }
+
+  footer { text-align:center; padding:32px; font-size:12px; color:var(--muted); opacity:0.5; border-top:1px solid var(--border); margin-top:40px; }
+
+  @media(max-width:768px){
+    .hero,.section,.meta-bar { padding:40px 20px; }
+    .summary-grid { grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="tag">Project 1 — SME Evaluation</div>
+  <h1>Biology AI Response<br><em>Evaluation Report</em></h1>
+  <p class="subtitle">This project demonstrates the ability to validate biological reasoning and identify conceptual errors in AI-generated responses. 10 undergraduate-level biology questions were evaluated across 5 domains — each assessed for factual accuracy, reasoning clarity, and scientific correctness.</p>
+</div>
+
+<div class="meta-bar">
+  <div class="meta-item"><strong>Yash Sahu</strong>Evaluator / Biology SME</div>
+  <div class="meta-item"><strong>10 Questions</strong>Evaluated</div>
+  <div class="meta-item"><strong>5 Domains</strong>Molecular Biology · Genetics · Cell Biology · Ecology · Biochemistry</div>
+  <div class="meta-item"><strong>UG Level</strong>Difficulty</div>
+  <div class="meta-item"><strong>2025</strong>Year</div>
+</div>
+
+<div class="section">
+  <div class="summary-grid">
+    <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">Total Evaluated</div></div>
+    <div class="stat-card"><div class="stat-num" id="cnt-yes">5</div><div class="stat-label">Correct</div></div>
+    <div class="stat-card"><div class="stat-num" id="cnt-partial">1</div><div class="stat-label">Partially Correct</div></div>
+    <div class="stat-card"><div class="stat-num" id="cnt-no">4</div><div class="stat-label">Incorrect</div></div>
+  </div>
+
+  <div class="filters">
+    <button class="fbtn active" onclick="filter('all',this)">All domains</button>
+    <button class="fbtn" onclick="filter('Molecular Biology',this)">Molecular Biology</button>
+    <button class="fbtn" onclick="filter('Genetics',this)">Genetics</button>
+    <button class="fbtn" onclick="filter('Cell Biology',this)">Cell Biology</button>
+    <button class="fbtn" onclick="filter('Ecology',this)">Ecology</button>
+    <button class="fbtn" onclick="filter('Biochemistry',this)">Biochemistry</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:4%">#</th>
+          <th style="width:17%">Question</th>
+          <th style="width:22%">AI-Generated Answer</th>
+          <th style="width:8%">Correct?</th>
+          <th style="width:12%">Error Type</th>
+          <th style="width:37%">SME Feedback — Yash Sahu</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="report-box">
+    <h2>Evaluation Summary</h2>
+    <p>Out of 10 AI-generated responses evaluated, <strong style="color:var(--green)">5 were correct, 1 was partially correct, and 4 were incorrect</strong>. The most common error types identified were conceptual confusion (mixing up similar structures/processes), factual errors (incorrect statements about biological mechanisms), and incomplete reasoning (correct but missing critical nuance).</p>
+    <p><strong style="color:var(--accent)">Key findings:</strong></p>
+    <ul>
+      <li><strong>Molecular Biology</strong> — AI confused transcription with replication (Q1) and incorrectly described the Shine-Dalgarno sequence as eukaryotic (Q6). Both are high-risk errors for AI training data.</li>
+      <li><strong>Cell Biology</strong> — AI attributed rough ER functions to smooth ER (Q3) — a common but significant error in organelle function annotation.</li>
+      <li><strong>Genetics</strong> — AI definition of frameshift mutations was incomplete; it missed the critical exception where insertions/deletions in multiples of 3 do not cause a frame shift (Q8).</li>
+      <li><strong>Ecology & Biochemistry</strong> — AI performed well, with accurate answers on eutrophication, ATP, trophic cascades, and competitive inhibition.</li>
+    </ul>
+    <p style="margin-top:16px;">This evaluation reflects the core competencies required for Biology SME roles in AI training and RLHF workflows: identifying factual errors, recognising incomplete reasoning, and providing structured expert-level feedback on AI-generated scientific content.</p>
+  </div>
+</div>
+
+<footer>Biology SME Evaluation Report · Yash Sahu · Indore, Madhya Pradesh · 2025</footer>
+
+<script>
+const domainClass = { 'Molecular Biology':'badge-mol','Cell Biology':'badge-cell','Ecology':'badge-eco','Biochemistry':'badge-bio','Genetics':'badge-gen' };
+const data = [
+  { id:1, domain:'Molecular Biology', question:'What is the role of RNA polymerase in transcription?', ai_answer:'RNA polymerase binds to the promoter region and synthesizes a new DNA strand by reading the template strand in the 3\' to 5\' direction, producing a complementary DNA copy.', verdict:'no', error_type:'Factual error', feedback:'RNA polymerase synthesizes RNA, not DNA. The product of transcription is mRNA, not a DNA copy. The enzyme reads the template strand 3\'→5\' and produces RNA 5\'→3\' — this part is correct. The answer confuses transcription with DNA replication, which is a critical distinction for AI training data.' },
+  { id:2, domain:'Genetics', question:'Explain the difference between incomplete dominance and codominance with an example.', ai_answer:'In incomplete dominance, neither allele is fully dominant and a blended phenotype results — e.g., red × white flowers produce pink offspring. In codominance, both alleles are expressed simultaneously — e.g., AB blood type in humans.', verdict:'yes', error_type:'—', feedback:'Accurate and well-reasoned. Both concepts are correctly defined and distinguished. Examples are appropriate — Mirabilis jalapa for incomplete dominance and ABO blood group for codominance are standard references. Reasoning is clear and complete.' },
+  { id:3, domain:'Cell Biology', question:'What is the function of the smooth endoplasmic reticulum (SER)?', ai_answer:'The smooth ER is responsible for protein synthesis and folding. It works closely with ribosomes to translate mRNA into proteins, which are then packaged into vesicles and sent to the Golgi apparatus.', verdict:'no', error_type:'Conceptual confusion', feedback:'This answer describes rough ER (RER) functions, not SER. SER lacks ribosomes and is NOT involved in protein synthesis. Actual SER functions: lipid/steroid hormone synthesis, drug detoxification (liver), calcium ion storage (muscle cells). Confusing SER and RER is a frequent AI error that SMEs must catch.' },
+  { id:4, domain:'Ecology', question:'What is eutrophication and what causes it?', ai_answer:'Eutrophication is the enrichment of a water body with nutrients (N and P), often from agricultural runoff and sewage. This triggers excessive algal growth, leading to oxygen depletion and death of aquatic organisms.', verdict:'yes', error_type:'—', feedback:'Correct and complete. Accurately identifies nutrient sources, names primary pollutants, describes algal bloom formation, and explains hypoxia. This aligns with my field research at Bilawali Lake where eutrophication was documented across three seasons.' },
+  { id:5, domain:'Biochemistry', question:'Describe the role of ATP in cellular metabolism.', ai_answer:'ATP is the primary energy currency of the cell. Energy is released when ATP is hydrolysed to ADP and inorganic phosphate, powering muscle contraction, active transport, and biosynthesis. ATP is continuously regenerated through cellular respiration.', verdict:'yes', error_type:'—', feedback:'Accurate and well-structured. Correctly identifies ATP as universal energy currency, explains hydrolysis reaction, lists relevant processes, and notes regeneration via respiration. Scientifically sound.' },
+  { id:6, domain:'Molecular Biology', question:'What is the significance of the Shine-Dalgarno sequence in prokaryotes?', ai_answer:'The Shine-Dalgarno sequence is a promoter region found upstream of the start codon in eukaryotic mRNA. It helps RNA polymerase bind to the DNA to begin transcription.', verdict:'no', error_type:'Multiple errors', feedback:'Three major errors: (1) Shine-Dalgarno is prokaryotic, not eukaryotic — eukaryotes use the Kozak sequence. (2) It is a ribosome binding site on mRNA, not a promoter on DNA. (3) It facilitates ribosome binding for translation initiation, not transcription. This response is fundamentally incorrect and high-risk for AI training data.' },
+  { id:7, domain:'Cell Biology', question:'Explain the role of mitochondria in apoptosis.', ai_answer:'Mitochondria play a key role in intrinsic apoptosis. They release cytochrome c into the cytoplasm, which binds with Apaf-1 and pro-caspase-9 to form the apoptosome, activating the caspase cascade leading to cell death.', verdict:'yes', error_type:'—', feedback:'Accurate description of the intrinsic apoptotic pathway. Correctly identifies cytochrome c release, apoptosome formation, and downstream caspase activation. Could mention Bcl-2 family proteins as regulators, but the core answer is correct and precise.' },
+  { id:8, domain:'Genetics', question:'What is the difference between a frameshift mutation and a point mutation?', ai_answer:'A point mutation involves a change in a single nucleotide base. A frameshift mutation occurs when nucleotides are inserted or deleted, shifting the reading frame and potentially changing all subsequent amino acids.', verdict:'partial', error_type:'Incomplete reasoning', feedback:'Mostly correct but incomplete. Omits: (1) Point mutation subtypes — silent, missense, and nonsense mutations. (2) Critical exception: insertions/deletions in multiples of 3 do NOT cause a reading frame shift. This nuance is important for accurate SME annotation. Partial credit only.' },
+  { id:9, domain:'Ecology', question:'Explain the concept of a trophic cascade with an example.', ai_answer:'A trophic cascade occurs when changes at one trophic level ripple through an ecosystem. Classic example: reintroduction of wolves in Yellowstone reduced elk populations, allowed vegetation to recover, stabilised riverbanks, and changed river flow — demonstrating top-down regulation.', verdict:'yes', error_type:'—', feedback:'Excellent answer. Accurate definition and the Yellowstone wolf example is one of the most well-documented trophic cascade cases. Correctly identifies top-down regulation and traces the cascade through multiple trophic levels including indirect abiotic effects. Well-reasoned.' },
+  { id:10, domain:'Biochemistry', question:'What is competitive inhibition in enzyme kinetics?', ai_answer:'Competitive inhibition occurs when an inhibitor binds to the active site of an enzyme, blocking substrate binding. It increases the apparent Km while Vmax remains unchanged, because inhibition can be overcome by increasing substrate concentration.', verdict:'yes', error_type:'—', feedback:'Correct and precise. Accurately describes the mechanism, correctly states Km increases and Vmax remains unchanged. The kinetic interpretation is accurate and textbook-standard for UG-level evaluation.' }
+];
+
+let activeFilter = 'all';
+function filter(domain, btn) {
+  activeFilter = domain;
+  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+function render() {
+  const rows = activeFilter === 'all' ? data : data.filter(d => d.domain === activeFilter);
+  document.getElementById('tbody').innerHTML = rows.map(d => `
+    <tr>
+      <td><span class="q-num">Q${d.id}</span></td>
+      <td><div style="font-size:12px;margin-bottom:6px;">${d.question}</div><span class="domain-badge ${domainClass[d.domain]}">${d.domain}</span></td>
+      <td><div class="ai-ans">${d.ai_answer}</div></td>
+      <td><span class="verdict v-${d.verdict}">${d.verdict==='yes'?'Yes':d.verdict==='no'?'No':'Partial'}</span></td>
+      <td><span class="error-tag">${d.error_type}</span></td>
+      <td><div class="feedback">${d.feedback}</div></td>
+    </tr>`).join('');
+}
+render();
+</script>
+</body>
+</html>
